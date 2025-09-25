@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chess Master</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #2F1B14;
+        }
+        
+        .game-container {
+            display: flex;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .board-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            border: 4px solid #8B4513;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .square {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .square.light { background: #F0D9B5; }
+        .square.dark { background: #B58863; }
+        
+        .square:hover {
+            box-shadow: inset 0 0 0 3px #FFD700;
+        }
+        
+        .square.selected {
+            background: #FFD700 !important;
+            box-shadow: inset 0 0 0 3px #FF6347;
+        }
+        
+        .square.possible-move {
+            background: #90EE90 !important;
+        }
+        
+        .square.capture {
+            background: #FFB6C1 !important;
+        }
+        
+        .coordinates {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .sidebar {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .game-info {
+            background: #F5F5DC;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #8B4513;
+        }
+        
+        .current-player {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .player.white { color: #000; }
+        .player.black { color: #8B4513; }
+        
+        .captured {
+            margin-top: 15px;
+        }
+        
+        .captured h4 {
+            margin-bottom: 10px;
+            color: #8B4513;
+        }
+        
+        .captured-pieces {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 40px;
+            background: #FFF;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #DDD;
+        }
+        
+        .controls {
+            background: #F5F5DC;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #8B4513;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background: #A0522D;
+        }
+        
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="board-container">
+            <div class="chess-board" id="chessBoard"></div>
+            <div class="coordinates">
+                <span>a b c d e f g h</span>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="game-info">
+                <div class="current-player">
+                    Current Player: <span class="player white" id="currentPlayer">White</span>
+                </div>
+                
+                <div class="captured">
+                    <h4>White Captured:</h4>
+                    <div class="captured-pieces" id="whiteCaptured"></div>
+                </div>
+                
+                <div class="captured">
+                    <h4>Black Captured:</h4>
+                    <div class="captured-pieces" id="blackCaptured"></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <h3>Game Controls</h3>
+                <button class="btn" onclick="game.newGame()">New Game</button>
+                <button class="btn" onclick="game.undoMove()">Undo Move</button>
+                <button class="btn" onclick="game.toggleAI()">Toggle AI</button>
+                
+                <div style="margin-top: 20px; font-size: 14px;">
+                    <p><strong>How to Play:</strong></p>
+                    <p>• Click a piece to select it</p>
+                    <p>• Click a highlighted square to move</p>
+                    <p>• Green = possible moves</p>
+                    <p>• Pink = capture moves</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="game-over" id="gameOver">
+        <h2 id="gameResult">Game Over</h2>
+        <p id="gameMessage">Checkmate!</p>
+        <button class="btn" onclick="game.newGame(); document.getElementById('gameOver').style.display='none';">Play Again</button>
+    </div>
+    
+    <script src="chess.js"></script>
+</body>
+</html>

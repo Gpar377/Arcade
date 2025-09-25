@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Townscaper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="ui-panel">
+            <h1>Townscaper</h1>
+            <div class="controls">
+                <div class="color-palette">
+                    <div class="color-btn active" data-color="#ff6b6b" style="background: #ff6b6b;"></div>
+                    <div class="color-btn" data-color="#4ecdc4" style="background: #4ecdc4;"></div>
+                    <div class="color-btn" data-color="#45b7d1" style="background: #45b7d1;"></div>
+                    <div class="color-btn" data-color="#96ceb4" style="background: #96ceb4;"></div>
+                    <div class="color-btn" data-color="#feca57" style="background: #feca57;"></div>
+                    <div class="color-btn" data-color="#ff9ff3" style="background: #ff9ff3;"></div>
+                    <div class="color-btn" data-color="#54a0ff" style="background: #54a0ff;"></div>
+                    <div class="color-btn" data-color="#5f27cd" style="background: #5f27cd;"></div>
+                </div>
+                <div class="tools">
+                    <button id="buildMode" class="tool-btn active">Build</button>
+                    <button id="deleteMode" class="tool-btn">Delete</button>
+                    <button id="clearAll" class="tool-btn danger">Clear All</button>
+                </div>
+                <div class="info">
+                    <p>Left click: Place/Remove blocks</p>
+                    <p>Right click: Pan camera</p>
+                    <p>Trackpad/Scroll: Zoom</p>
+                    <p>Two-finger scroll: Zoom (Mac)</p>
+                </div>
+            </div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

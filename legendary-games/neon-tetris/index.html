@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neon Tetris</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle, #001122, #000000);
+        }
+        
+        .game-board {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        
+        .left-panel, .right-panel {
+            width: 200px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        
+        .game-area {
+            position: relative;
+        }
+        
+        canvas {
+            border: 3px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 30px #00ff00, inset 0 0 30px rgba(0, 255, 0, 0.1);
+            background: #000011;
+        }
+        
+        .score-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 24px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .level-value {
+            font-size: 18px;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+        
+        .next-piece {
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .controls {
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .key {
+            color: #ffff00;
+            font-weight: bold;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            color: #ff0000;
+            font-size: 24px;
+            display: none;
+            box-shadow: 0 0 30px #ff0000;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        
+        .restart-btn:hover {
+            background: linear-gradient(45deg, #ff4444, #ff6666);
+        }
+        
+        @keyframes neonPulse {
+            0%, 100% { box-shadow: 0 0 20px #00ff00; }
+            50% { box-shadow: 0 0 40px #00ff00, 0 0 60px #00ff00; }
+        }
+        
+        .neon-pulse {
+            animation: neonPulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-board">
+            <div class="left-panel">
+                <div class="score-section">
+                    <h3>SCORE</h3>
+                    <div class="score-value" id="score">0</div>
+                </div>
+                
+                <div class="score-section">
+                    <h3>LEVEL</h3>
+                    <div class="level-value" id="level">1</div>
+                </div>
+                
+                <div class="score-section">
+                    <h3>LINES</h3>
+                    <div class="score-value" id="lines">0</div>
+                </div>
+                
+                <div class="next-piece">
+                    <h4>NEXT</h4>
+                    <canvas id="nextCanvas" width="80" height="80"></canvas>
+                </div>
+            </div>
+            
+            <div class="game-area">
+                <canvas id="gameCanvas" width="300" height="600"></canvas>
+                <div class="game-over" id="gameOver">
+                    <div>GAME OVER</div>
+                    <div style="font-size: 16px; margin: 10px 0;">Final Score: <span id="finalScore">0</span></div>
+                    <button class="restart-btn" onclick="game.restart()">RESTART</button>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="controls">
+                    <h3>CONTROLS</h3>
+                    <p><span class="key">←→</span> Move</p>
+                    <p><span class="key">↓</span> Soft Drop</p>
+                    <p><span class="key">↑</span> Rotate</p>
+                    <p><span class="key">SPACE</span> Hard Drop</p>
+                    <p><span class="key">P</span> Pause</p>
+                    <p><span class="key">R</span> Restart</p>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h4>SCORING</h4>
+                    <p>Single: 100</p>
+                    <p>Double: 300</p>
+                    <p>Triple: 500</p>
+                    <p>Tetris: 800</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="tetris.js"></script>
+</body>
+</html>

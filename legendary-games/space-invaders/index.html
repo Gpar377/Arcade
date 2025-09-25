@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neon Space Invaders</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: radial-gradient(circle, #001122, #000000);
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        canvas {
+            border: 3px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 30px #00ff00;
+            background: #000011;
+        }
+        
+        .ui-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #00ff00;
+        }
+        
+        .score {
+            font-size: 24px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .lives {
+            font-size: 18px;
+            color: #ff0040;
+            margin-top: 10px;
+        }
+        
+        .wave {
+            font-size: 16px;
+            color: #ffff00;
+            margin-top: 5px;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #00ff00;
+            font-size: 12px;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #ff0040;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: #ff0040;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div class="ui-overlay">
+            <div class="score">SCORE: <span id="score">0</span></div>
+            <div class="lives">LIVES: <span id="lives">3</span></div>
+            <div class="wave">WAVE: <span id="wave">1</span></div>
+        </div>
+        
+        <div class="controls">
+            <div><strong>CONTROLS:</strong></div>
+            <div>A/D or ←/→ - Move</div>
+            <div>SPACE - Shoot</div>
+            <div>P - Pause</div>
+            <div>R - Restart</div>
+        </div>
+        
+        <div class="game-over" id="gameOver">
+            <h2>GAME OVER</h2>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <p>Wave Reached: <span id="finalWave">1</span></p>
+            <button onclick="game.restart()" style="margin-top: 20px; padding: 10px 20px; background: #ff0040; color: white; border: none; border-radius: 5px; cursor: pointer;">PLAY AGAIN</button>
+        </div>
+    </div>
+    
+    <script src="invaders.js"></script>
+</body>
+</html>

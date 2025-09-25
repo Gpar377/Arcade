@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🎮 Game Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            font-weight: 900;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8); }
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+        
+        .game-card:hover::before {
+            animation: shine 0.6s ease-in-out;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .game-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .game-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .game-description {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .game-status {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .game-status.new {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-top: 40px;
+        }
+        
+        .footer p {
+            opacity: 0.6;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 GAME HUB 🎮</h1>
+        <p>Your Ultimate Gaming Collection - Now with Full Stack RPGs!</p>
+    </div>
+    
+    <div class="games-grid">
+        <div class="game-card" onclick="window.open('townscaper/index.html', '_blank')">
+            <div class="game-icon">🏘️</div>
+            <div class="game-title">Townscaper</div>
+            <div class="game-description">
+                Build colorful hexagonal cities on water. Place buildings, create heights, and design your perfect town with an intuitive interface.
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('deletion-game-improved/index.html', '_blank')">
+            <div class="game-icon">⚡</div>
+            <div class="game-title">The Deletion Game</div>
+            <div class="game-description">
+                Every step permanently deletes the ground behind you. Navigate to the exit without destroying your only path there. Enhanced with stats and effects!
+            </div>
+            <div class="game-status new">ENHANCED</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('uno/index.html', '_blank')">
+            <div class="game-icon">🃏</div>
+            <div class="game-title">UNO</div>
+            <div class="game-description">
+                Classic UNO card game with AI opponent. Features all special cards, wild color selection, and authentic UNO rules. Don't forget to call UNO!
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="launchTempleRun()">
+            <div class="game-icon">🏃</div>
+            <div class="game-title">Temple Run</div>
+            <div class="game-description">
+                Endless runner adventure! Jump, slide, and dodge obstacles while collecting coins. Use WASD/Arrow keys to move and SPACE to jump.
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('war-commander/index.html', '_blank')">
+            <div class="game-icon">⚔️</div>
+            <div class="game-title">War Commander</div>
+            <div class="game-description">
+                Strategic turn-based warfare. Deploy soldiers, tanks, and aircraft. Capture territories and outmaneuver your opponent in tactical combat.
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('neon-tetris/index.html', '_blank')">
+            <div class="game-icon">🧩</div>
+            <div class="game-title">Neon Tetris</div>
+            <div class="game-description">
+                Classic block-stacking puzzle with cyberpunk neon effects, particle systems, and progressive difficulty. Clear lines and chase high scores!
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('cyber-snake/index.html', '_blank')">
+            <div class="game-icon">🐍</div>
+            <div class="game-title">Cyber Snake</div>
+            <div class="game-description">
+                Futuristic snake game with power-ups, obstacles, and special effects. Collect food, avoid bombs, and use shields to survive!
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('space-invaders/index.html', '_blank')">
+            <div class="game-icon">👾</div>
+            <div class="game-title">Neon Space Invaders</div>
+            <div class="game-description">
+                Classic arcade shooter with neon effects and particle explosions. Defend Earth from waves of alien invaders with increasing difficulty!
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('racing-game/index.html', '_blank')">
+            <div class="game-icon">🏎️</div>
+            <div class="game-title">Neon Racer</div>
+            <div class="game-description">
+                High-speed futuristic racing with nitro boosts and collision physics. Dodge traffic, hit top speeds, and survive as long as possible!
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('chess/index.html', '_blank')">
+            <div class="game-icon">♕</div>
+            <div class="game-title">Chess Master</div>
+            <div class="game-description">
+                Classic chess with full piece movement, AI opponent, and elegant wooden board design. Features undo moves and captured piece tracking.
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('connect-four/index.html', '_blank')">
+            <div class="game-icon">🔴</div>
+            <div class="game-title">Connect Four</div>
+            <div class="game-description">
+                Drop colored discs to get four in a row! Features AI opponent, winning animations, and score tracking across multiple games.
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('tic-tac-toe/index.html', '_blank')">
+            <div class="game-icon">❌</div>
+            <div class="game-title">Ultimate Tic-Tac-Toe</div>
+            <div class="game-description">
+                Classic X's and O's with modern glass-morphism design. Features AI with 3 difficulty levels and comprehensive score tracking.
+            </div>
+            <div class="game-status">READY</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('neon-breakout/index.html', '_blank')">
+            <div class="game-icon">🔥</div>
+            <div class="game-title">Neon Breakout Ultimate</div>
+            <div class="game-description">
+                The ultimate brick-breaking experience! Features 5 power-ups, particle effects, laser shooting, multi-ball action, and progressive levels with stunning neon visuals.
+            </div>
+            <div class="game-status new">ULTIMATE</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('neon-impostor/index.html', '_blank')">
+            <div class="game-icon">🕵️</div>
+            <div class="game-title">Neon Impostor</div>
+            <div class="game-description">
+                Among Us style deduction game! Complete tasks as a crewmate or eliminate players as an impostor. Features voting, sabotage, AI players, and emergency meetings.
+            </div>
+            <div class="game-status new">SOCIAL</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('flappy-neon/index.html', '_blank')">
+            <div class="game-icon">🐦</div>
+            <div class="game-title">Flappy Neon</div>
+            <div class="game-description">
+                Production-level Flappy Bird clone with stunning neon visuals, 4 power-ups, particle effects, progressive difficulty, and mobile-responsive design. The ultimate finale!
+            </div>
+            <div class="game-status new">PRODUCTION</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('neon-rpg/index.html', '_blank')">
+            <div class="game-icon">⚔️</div>
+            <div class="game-title">Neon RPG</div>
+            <div class="game-description">
+                Full stack RPG adventure with character progression, inventory management, quest system, world exploration, combat mechanics, and equipment upgrades. Complete RPG experience!
+            </div>
+            <div class="game-status new">FULL STACK RPG</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('cyber-dungeon/index.html', '_blank')">
+            <div class="game-icon">🤖</div>
+            <div class="game-title">Cyber Dungeon</div>
+            <div class="game-description">
+                Roguelike RPG with procedural dungeon generation, skill trees, equipment system, turn-based combat, and cyberpunk aesthetics. Endless replayability!
+            </div>
+            <div class="game-status new">FULL STACK RPG</div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>🎮 Game Hub - Your Personal Gaming Collection 🎮</p>
+        <p>17 LEGENDARY Games Ready to Play!</p>
+    </div>
+    
+    <script>
+        function launchTempleRun() {
+            // For macOS, we'll show instructions to run the Python game
+            const instructions = `
+To play Temple Run:
+
+1. Open Terminal
+2. Run: cd /Users/guest/games/temple-run
+3. Run: python3 temple_run.py
+
+Controls:
+• SPACE - Jump
+• A/D or Arrow Keys - Move left/right
+• R - Restart when game over
+
+Collect coins and avoid obstacles!`;
+            
+            alert(instructions);
+            
+            // Also try to open terminal and run the command
+            try {
+                // This will work on some systems
+                window.location.href = 'file:///Users/guest/games/temple-run/run.sh';
+            } catch(e) {
+                console.log('Could not auto-launch, use manual instructions');
+            }
+        }
+    </script>
+</body>
+</html>

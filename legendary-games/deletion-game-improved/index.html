@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Deletion Game - Enhanced</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .game-container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 2px solid #00ff88;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 12px;
+            color: #ff4757;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .control-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff4757, #ff3742);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+        
+        .control-btn.reset {
+            background: linear-gradient(45deg, #00ff88, #00e676);
+        }
+        
+        .control-btn.reset:hover {
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .key {
+            background: #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+        
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        canvas {
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            background: #0a0a0a;
+        }
+        
+        .status-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 30px;
+            border-radius: 25px;
+            border: 1px solid #00ff88;
+            font-weight: bold;
+            text-align: center;
+            min-width: 300px;
+        }
+        
+        .status-overlay.win {
+            border-color: #00ff88;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+        }
+        
+        .status-overlay.lose {
+            border-color: #ff4757;
+            color: #ff4757;
+            text-shadow: 0 0 10px #ff4757;
+        }
+        
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="sidebar">
+            <div class="logo glow">DELETION</div>
+            <div class="subtitle">Every Step Matters</div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span>Steps Taken:</span>
+                    <span class="stat-value" id="stepCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Tiles Deleted:</span>
+                    <span class="stat-value" id="deletedCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Distance to Exit:</span>
+                    <span class="stat-value" id="distanceToExit">--</span>
+                </div>
+                <div class="stat-item">
+                    <span>Survival Rate:</span>
+                    <span class="stat-value" id="survivalRate">100%</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn reset" id="newGame">New Game</button>
+                <button class="control-btn" id="undoMove">Undo Last Move</button>
+                <button class="control-btn" id="hintBtn">Show Hint</button>
+            </div>
+            
+            <div class="instructions">
+                <p><strong>CONTROLS:</strong></p>
+                <p><span class="key">WASD</span> or <span class="key">Arrow Keys</span> to move</p>
+                <p><span class="key">R</span> to restart level</p>
+                <p><span class="key">H</span> for hint</p>
+                <br>
+                <p><strong>OBJECTIVE:</strong></p>
+                <p>Reach the <span style="color: #00ff88;">EXIT</span> without deleting your path there. Every step permanently destroys the ground behind you!</p>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="status-overlay" id="statusOverlay">
+                Navigate carefully - there's no going back!
+            </div>
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>

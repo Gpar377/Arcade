@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neon Impostor - Among Us Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .game-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .sidebar {
+            width: 320px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            border-right: 3px solid #00ff00;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #ff0040;
+            text-shadow: 0 0 20px #ff0040;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #ff0040; }
+            to { text-shadow: 0 0 40px #ff0040, 0 0 60px #ff0040; }
+        }
+        
+        .player-info {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 15px;
+        }
+        
+        .player-role {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .role-crewmate { color: #00ffff; }
+        .role-impostor { color: #ff0040; }
+        
+        .tasks-panel {
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        
+        .task-completed {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+        }
+        
+        .players-panel {
+            background: rgba(255, 255, 0, 0.1);
+            border: 2px solid #ffff00;
+            border-radius: 15px;
+            padding: 15px;
+        }
+        
+        .player-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .player-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .player-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+        
+        .player-dead {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+        
+        .controls {
+            background: rgba(255, 0, 255, 0.1);
+            border: 2px solid #ff00ff;
+            border-radius: 15px;
+            padding: 15px;
+        }
+        
+        .control-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #ff0040, #ff4070);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 64, 0.4);
+        }
+        
+        .control-btn.safe {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            color: #000;
+        }
+        
+        .control-btn.safe:hover {
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
+        }
+        
+        .game-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        canvas {
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.3);
+            background: #000011;
+            cursor: crosshair;
+        }
+        
+        .game-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #ff0040;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 0 50px rgba(255, 0, 64, 0.5);
+        }
+        
+        .overlay-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px currentColor;
+        }
+        
+        .voting-panel {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ffff00;
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+            z-index: 999;
+        }
+        
+        .vote-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .vote-btn {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #fff;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .vote-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .minimap {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 150px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+        }
+        
+        .emergency-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff0040, #ff4070);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="sidebar">
+            <div class="logo">NEON IMPOSTOR</div>
+            
+            <div class="player-info">
+                <div class="player-role" id="playerRole">
+                    <span class="role-crewmate">CREWMATE</span>
+                </div>
+                <div style="text-align: center; font-size: 12px; color: #00ffff;">
+                    Complete tasks to win!
+                </div>
+            </div>
+            
+            <div class="tasks-panel">
+                <h4 style="text-align: center; margin-bottom: 10px; color: #00ffff;">TASKS (<span id="taskProgress">0/5</span>)</h4>
+                <div id="tasksList"></div>
+            </div>
+            
+            <div class="players-panel">
+                <h4 style="text-align: center; margin-bottom: 10px; color: #ffff00;">PLAYERS (<span id="playersAlive">6</span> alive)</h4>
+                <div id="playersList"></div>
+            </div>
+            
+            <div class="controls">
+                <h4 style="text-align: center; margin-bottom: 10px; color: #ff00ff;">ACTIONS</h4>
+                <button class="control-btn safe" onclick="game.doTask()">Complete Task</button>
+                <button class="control-btn" onclick="game.sabotage()" id="sabotageBtn">Sabotage Systems</button>
+                <button class="control-btn" onclick="game.kill()" id="killBtn">Eliminate Player</button>
+                <button class="control-btn safe" onclick="game.reportBody()">Report Body</button>
+                <button class="control-btn safe" onclick="game.callEmergency()">Emergency Meeting</button>
+                <button class="control-btn" onclick="game.newGame()">New Game</button>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            
+            <div class="minimap" id="minimap">
+                <canvas id="minimapCanvas" width="146" height="96"></canvas>
+            </div>
+            
+            <div class="voting-panel" id="votingPanel">
+                <h3 style="color: #ffff00; text-align: center;">EMERGENCY MEETING</h3>
+                <p style="text-align: center; margin: 10px 0; color: #00ffff;">Who is the impostor?</p>
+                <div class="vote-options" id="voteOptions"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="control-btn" onclick="game.skipVote()">Skip Vote</button>
+                </div>
+            </div>
+            
+            <div class="game-overlay" id="gameOverlay">
+                <div class="overlay-title" id="overlayTitle">GAME OVER</div>
+                <div id="overlayMessage">The impostors have won!</div>
+                <button class="control-btn" onclick="game.newGame(); game.hideOverlay();" style="margin-top: 20px;">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="impostor.js"></script>
+</body>
+</html>

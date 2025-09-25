@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon RPG - Full Stack Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .game-container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border-right: 2px solid #00ffff;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-game {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-world {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at center, #1a1a2e, #0a0a0a);
+        }
+
+        .ui-panel {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #00ffff;
+            padding: 15px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .character-info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-bar {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ffff;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .stat-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .hp-fill { background: linear-gradient(90deg, #ff0040, #ff4080); }
+        .mp-fill { background: linear-gradient(90deg, #0040ff, #4080ff); }
+        .xp-fill { background: linear-gradient(90deg, #40ff00, #80ff40); }
+
+        .inventory {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .inventory-slot {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .inventory-slot:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        .inventory-slot.occupied {
+            background: rgba(255, 255, 0, 0.2);
+            border-color: #ffff00;
+        }
+
+        .world-map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .location {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.3), rgba(0, 255, 255, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .location:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        .location.current {
+            border-color: #ffff00;
+            box-shadow: 0 0 15px #ffff00;
+        }
+
+        .combat-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .enemy {
+            width: 200px;
+            height: 200px;
+            border: 3px solid #ff0040;
+            border-radius: 20px;
+            background: radial-gradient(circle, rgba(255, 0, 64, 0.3), rgba(255, 0, 64, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: enemyPulse 2s infinite;
+        }
+
+        @keyframes enemyPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .combat-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .quest-log {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .quest-item {
+            padding: 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .quest-item.completed {
+            color: #40ff40;
+            text-decoration: line-through;
+        }
+
+        .shop-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            padding: 50px;
+            z-index: 1000;
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .shop-item {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .shop-item:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff0040;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .level-up-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #ffff00, #ff8000);
+            color: black;
+            padding: 30px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 2000;
+            display: none;
+            animation: levelUpPulse 0.5s ease-in-out;
+        }
+
+        @keyframes levelUpPulse {
+            0% { transform: translate(-50%, -50%) scale(0.5); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .particles {
+            position: absolute;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: particleFloat 3s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+
+        .title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .section-title {
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+            color: #ffff00;
+            text-shadow: 0 0 5px #ffff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="sidebar">
+            <div class="title">NEON RPG</div>
+            
+            <div class="character-info">
+                <div class="section-title">CHARACTER</div>
+                <div>Name: <span id="playerName">Hero</span></div>
+                <div>Level: <span id="playerLevel">1</span></div>
+                <div>Class: <span id="playerClass">Warrior</span></div>
+                <div>Gold: <span id="playerGold">100</span></div>
+                
+                <div style="margin-top: 10px;">
+                    <div>HP: <span id="currentHp">100</span>/<span id="maxHp">100</span></div>
+                    <div class="stat-bar">
+                        <div class="stat-fill hp-fill" id="hpBar" style="width: 100%"></div>
+                    </div>
+                    
+                    <div>MP: <span id="currentMp">50</span>/<span id="maxMp">50</span></div>
+                    <div class="stat-bar">
+                        <div class="stat-fill mp-fill" id="mpBar" style="width: 100%"></div>
+                    </div>
+                    
+                    <div>XP: <span id="currentXp">0</span>/<span id="nextLevelXp">100</span></div>
+                    <div class="stat-bar">
+                        <div class="stat-fill xp-fill" id="xpBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">INVENTORY</div>
+            <div class="inventory" id="inventory"></div>
+
+            <div class="quest-log">
+                <div class="section-title">QUESTS</div>
+                <div id="questList"></div>
+            </div>
+        </div>
+
+        <div class="main-game">
+            <div class="game-world">
+                <canvas class="world-map" id="worldCanvas"></canvas>
+                <div class="particles" id="particles"></div>
+            </div>
+
+            <div class="ui-panel">
+                <div style="flex: 1;">
+                    <div class="section-title">ACTIONS</div>
+                    <button class="action-btn" onclick="game.explore()">Explore</button>
+                    <button class="action-btn" onclick="game.rest()">Rest</button>
+                    <button class="action-btn" onclick="game.openShop()">Shop</button>
+                </div>
+                <div style="flex: 2;">
+                    <div class="section-title">LOG</div>
+                    <div id="gameLog" style="height: 120px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Combat Screen -->
+    <div class="combat-screen" id="combatScreen">
+        <div class="enemy" id="enemy">
+            <div id="enemyName">Goblin</div>
+        </div>
+        <div>
+            <div>Enemy HP: <span id="enemyHp">50</span>/<span id="enemyMaxHp">50</span></div>
+            <div class="stat-bar" style="width: 300px; margin: 10px auto;">
+                <div class="stat-fill hp-fill" id="enemyHpBar" style="width: 100%"></div>
+            </div>
+        </div>
+        <div class="combat-actions">
+            <button class="action-btn" onclick="game.attack()">Attack</button>
+            <button class="action-btn" onclick="game.useSkill()">Magic</button>
+            <button class="action-btn" onclick="game.useItem()">Item</button>
+            <button class="action-btn" onclick="game.flee()">Flee</button>
+        </div>
+    </div>
+
+    <!-- Shop Screen -->
+    <div class="shop-screen" id="shopScreen">
+        <button class="close-btn" onclick="game.closeShop()">×</button>
+        <div class="title">NEON SHOP</div>
+        <div>Gold: <span id="shopGold">100</span></div>
+        <div class="shop-items" id="shopItems"></div>
+    </div>
+
+    <!-- Level Up Notification -->
+    <div class="level-up-notification" id="levelUpNotification">
+        LEVEL UP!
+    </div>
+
+    <script src="rpg.js"></script>
+</body>
+</html>
