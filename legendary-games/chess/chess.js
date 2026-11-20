@@ -9,8 +9,9 @@ class Chess {
         this.capturedPieces = { white: [], black: [] };
         
         this.pieces = {
-            white: { king: '♔', queen: '♕', rook: '♖', bishop: '♗', knight: '♘', pawn: '♙' },
-            black: { king: '♚', queen: '♛', rook: '♜', bishop: '♝', knight: '♞', pawn: '♟' }
+            // same solid glyphs for both sides; colour comes from CSS. \uFE0E stops phones swapping in emoji.
+            white: { king: '♚\uFE0E', queen: '♛\uFE0E', rook: '♜\uFE0E', bishop: '♝\uFE0E', knight: '♞\uFE0E', pawn: '♟\uFE0E' },
+            black: { king: '♚\uFE0E', queen: '♛\uFE0E', rook: '♜\uFE0E', bishop: '♝\uFE0E', knight: '♞\uFE0E', pawn: '♟\uFE0E' }
         };
         
         this.initBoard();
@@ -52,6 +53,7 @@ class Chess {
                 const piece = this.board[row][col];
                 if (piece) {
                     square.textContent = this.pieces[piece.color][piece.type];
+                    square.dataset.piece = piece.color;
                 }
                 
                 square.addEventListener('click', () => this.handleSquareClick(row, col));
@@ -353,18 +355,24 @@ class Chess {
         const blackCaptured = document.getElementById('blackCaptured');
         
         whiteCaptured.innerHTML = this.capturedPieces.white.map(piece => 
-            this.pieces[piece.color][piece.type]).join(' ');
+            `<span class="cap ${piece.color}">${this.pieces[piece.color][piece.type]}</span>`).join('');
         blackCaptured.innerHTML = this.capturedPieces.black.map(piece => 
-            this.pieces[piece.color][piece.type]).join(' ');
+            `<span class="cap ${piece.color}">${this.pieces[piece.color][piece.type]}</span>`).join('');
     }
     
     checkGameEnd() {
-        // Simple checkmate detection (basic implementation)
-        const hasValidMoves = this.hasValidMoves(this.currentPlayer === 'white' ? 'black' : 'white');
-        
-        if (!hasValidMoves) {
+        // This version has no check rules, so the game is won by taking the king.
+        const mover = this.currentPlayer;
+        const other = mover === 'white' ? 'black' : 'white';
+        const name = c => c.charAt(0).toUpperCase() + c.slice(1);
+        const kingAlive = this.board.some(r => r.some(p => p && p.type === 'king' && p.color === other));
+
+        if (!kingAlive || !this.hasValidMoves(other)) {
             this.gameOver = true;
-            document.getElementById('gameResult').textContent = `${this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1)} Wins!`;
+            document.getElementById('gameResult').textContent = `${name(mover)} wins`;
+            document.getElementById('gameMessage').textContent = kingAlive
+                ? `${name(other)} has no moves left.`
+                : `${name(mover)} took the king.`;
             document.getElementById('gameOver').style.display = 'block';
         }
     }
