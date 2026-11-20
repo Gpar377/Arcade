@@ -117,7 +117,7 @@ class UnoGame {
         
         const card = this.playerHand[cardIndex];
         if (!this.isValidPlay(card)) {
-            this.showMessage('Invalid move!');
+            this.showMessage('That card does not match the colour or number.');
             return;
         }
         
@@ -131,7 +131,7 @@ class UnoGame {
         // Check for win
         if (this.playerHand.length === 0) {
             this.gameOver = true;
-            this.showMessage('🎉 You Win! 🎉');
+            this.showMessage('You win. Press New game to play again.');
             return;
         }
         
@@ -259,7 +259,7 @@ class UnoGame {
             // Check for win
             if (this.computerHand.length === 0) {
                 this.gameOver = true;
-                this.showMessage('💻 Computer Wins! 💻');
+                this.showMessage('The computer wins. Press New game to play again.');
                 return;
             }
             
@@ -288,7 +288,7 @@ class UnoGame {
         if (this.playerHand.length === 1) {
             this.showMessage('UNO called!');
         } else {
-            this.showMessage('You can only call UNO with 1 card!');
+            this.showMessage('You can only call UNO with one card left.');
         }
     }
     
