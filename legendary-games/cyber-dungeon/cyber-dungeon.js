@@ -131,6 +131,55 @@ class CyberDungeon {
                 }
             }
         }
+
+        // The cave smoothing leaves separate pockets of floor. Join them all up so the
+        // player can always reach the stairs and every enemy and treasure.
+        const { width: W, height: H, grid } = this.dungeon;
+        const regions = [];
+        const seen = Array.from({ length: H }, () => Array(W).fill(false));
+        for (let y = 0; y < H; y++) {
+            for (let x = 0; x < W; x++) {
+                if (grid[y][x].type !== 'floor' || seen[y][x]) continue;
+                const region = [];
+                const stack = [[x, y]];
+                seen[y][x] = true;
+                while (stack.length) {
+                    const [cx, cy] = stack.pop();
+                    region.push({ x: cx, y: cy });
+                    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+                        const nx = cx + dx, ny = cy + dy;
+                        if (nx >= 0 && ny >= 0 && nx < W && ny < H && !seen[ny][nx] && grid[ny][nx].type === 'floor') {
+                            seen[ny][nx] = true;
+                            stack.push([nx, ny]);
+                        }
+                    }
+                }
+                regions.push(region);
+            }
+        }
+        regions.sort((a, b) => b.length - a.length);
+        const main = regions[0] || [];
+
+        // Pockets of one to three tiles are just noise: fill them in. This has to happen before
+        // any tunnels are dug, or filling a pocket could cut a tunnel that runs through it.
+        regions.slice(1).filter(r => r.length < 4).forEach(r => r.forEach(t => { grid[t.y][t.x].type = 'wall'; }));
+
+        for (const region of regions.slice(1).filter(r => r.length >= 4)) {
+            // Dig an L-shaped tunnel from the pocket to the nearest part of the main cave.
+            let best = null;
+            for (const a of region) {
+                for (const b of main) {
+                    const d = Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+                    if (!best || d < best.d) best = { a, b, d };
+                }
+            }
+            let { x, y } = best.a;
+            const horizontalFirst = Math.random() < 0.5;
+            const stepX = () => { while (x !== best.b.x) { x += Math.sign(best.b.x - x); grid[y][x].type = 'floor'; } };
+            const stepY = () => { while (y !== best.b.y) { y += Math.sign(best.b.y - y); grid[y][x].type = 'floor'; } };
+            if (horizontalFirst) { stepX(); stepY(); } else { stepY(); stepX(); }
+            main.push(...region);
+        }
     }
 
     placePlayer() {
