@@ -1,354 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>🎮 Game Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Orbitron', monospace;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: white;
-            overflow-x: hidden;
-        }
-        
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-        }
-        
-        .header h1 {
-            font-size: 48px;
-            font-weight: 900;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-            margin-bottom: 10px;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        .header p {
-            font-size: 18px;
-            opacity: 0.8;
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-            to { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8); }
-        }
-        
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .game-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.4s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s ease;
-            opacity: 0;
-        }
-        
-        .game-card:hover::before {
-            animation: shine 0.6s ease-in-out;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
-        }
-        
-        .game-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-        
-        .game-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
-        .game-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-        
-        .game-description {
-            font-size: 14px;
-            opacity: 0.8;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .game-status {
-            display: inline-block;
-            padding: 8px 16px;
-            background: rgba(0, 255, 136, 0.2);
-            border: 1px solid #00ff88;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #00ff88;
-            font-weight: bold;
-        }
-        
-        .game-status.new {
-            background: rgba(255, 71, 87, 0.2);
-            border-color: #ff4757;
-            color: #ff4757;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 40px;
-            background: rgba(0, 0, 0, 0.2);
-            margin-top: 40px;
-        }
-        
-        .footer p {
-            opacity: 0.6;
-            font-size: 14px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .games-grid {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 36px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legendary Arcade</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='%23FFC629'/%3E%3Cpath d='M1 7h4M2 7V1h4v1' stroke='%2314161B' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/arcade.css">
+<style>
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 20px 80px; }
+
+  .mast { padding: clamp(28px, 6vw, 72px) 0 clamp(20px, 3vw, 36px); display: grid; gap: clamp(22px, 3.4vw, 44px); }
+  .mast h1 {
+    font-size: clamp(54px, 12.5vw, 168px); font-weight: 800; font-stretch: 75%; line-height: .84; letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .mast p { font-size: clamp(17px, 1.6vw, 21px); color: var(--ink-2); max-width: 46ch; }
+
+  .tools { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 6px 0 22px; position: sticky; top: 0; z-index: 4; background: linear-gradient(var(--desk) 78%, transparent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  .chip {
+    appearance: none; border: 0; cursor: pointer; background: transparent; color: var(--ink); font-weight: 600; font-size: 15px;
+    padding: 8px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px #B9BEC8;
+  }
+  .chip:hover { background: #fff; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: #fff; box-shadow: none; }
+  .chip small { font: 700 14px var(--dots); opacity: .7; margin-left: 4px; }
+  .resume { text-decoration: none; }
+
+  /* the shelf */
+  .shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 26px 20px; list-style: none; margin: 0; padding: 0; }
+  .cart {
+    --lift: 0px;
+    position: relative; display: grid; grid-template-rows: auto 1fr; height: 100%;
+    background: var(--plastic); color: var(--on-plastic); text-decoration: none;
+    border-radius: 14px 14px 10px 10px; padding: 12px 12px 30px;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, .4), inset 0 -5px 0 rgba(0, 0, 0, .16), 0 calc(14px + var(--lift)) 22px -16px rgba(20, 22, 27, .6);
+    transform: translateY(calc(var(--lift) * -1)); transition: transform .16s ease, box-shadow .16s ease;
+    cursor: pointer; text-align: left; border: 0; font: inherit; width: 100%;
+  }
+  .cart:hover, .cart:focus-visible { --lift: 8px; }
+  /* grip ridges moulded into the bottom of the cartridge */
+  .cart::after {
+    content: ''; position: absolute; left: 22%; right: 22%; bottom: 10px; height: 11px;
+    background: repeating-linear-gradient(90deg, rgba(0, 0, 0, .22) 0 3px, transparent 3px 9px);
+    border-radius: 2px;
+  }
+  .cart__label { background: var(--plate); color: var(--ink); border-radius: 8px; padding: 12px; display: grid; gap: 12px; align-content: start; height: 100%; }
+  .cart__art {
+    aspect-ratio: 16 / 9; border-radius: 5px; display: grid; place-items: center;
+    background: var(--plastic); color: var(--on-plastic);
+    background-image: radial-gradient(rgba(0, 0, 0, .13) 1.2px, transparent 1.4px); background-size: 9px 9px;
+  }
+  .cart__art svg { height: 74%; }
+  .cart__name { font-size: 25px; font-weight: 800; font-stretch: 80%; letter-spacing: -0.02em; line-height: 1; }
+  .cart__blurb { font-size: 14.5px; color: var(--ink-2); line-height: 1.4; }
+  .cart__meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); padding-top: 4px; margin-top: auto; border-top: 1.5px dashed #D3D7DE; padding-top: 10px; }
+  .cart__meta b { color: var(--ink); font-weight: 700; }
+  li.is-first { grid-column: span 2; }
+  li.is-first .cart__label { grid-template-columns: 1fr 1fr; align-items: center; gap: 18px; }
+  li.is-first .cart__art { aspect-ratio: auto; height: 100%; min-height: 190px; }
+  li.is-first .cart__name { font-size: clamp(40px, 5vw, 64px); }
+  li.is-first .cart__blurb { font-size: 16px; margin-top: 10px; }
+  li.is-first .cart__meta { margin-top: 18px; }
+  @media (max-width: 620px) {
+    li.is-first { grid-column: auto; }
+    li.is-first .cart__label { grid-template-columns: 1fr; }
+    li.is-first .cart__art { min-height: 0; aspect-ratio: 16 / 9; }
+  }
+  .empty { padding: 40px 0; color: var(--ink-2); }
+
+  .foot { margin-top: 56px; padding-top: 18px; border-top: 1.5px solid var(--desk-line); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; color: var(--ink-2); font-size: 14px; }
+  .foot a { color: var(--ink); font-weight: 600; }
+
+  .cmd { display: flex; gap: 8px; align-items: stretch; }
+  .cmd code { flex: 1; background: var(--screen); color: #D7F5C2; font: 14px/1.5 ui-monospace, Menlo, Consolas, monospace; padding: 12px 14px; border-radius: 10px; white-space: pre; overflow-x: auto; }
+</style>
 </head>
 <body>
-    <div class="header">
-        <h1>🎮 GAME HUB 🎮</h1>
-        <p>Your Ultimate Gaming Collection - Now with Full Stack RPGs!</p>
-    </div>
-    
-    <div class="games-grid">
-        <div class="game-card" onclick="window.open('townscaper/index.html', '_blank')">
-            <div class="game-icon">🏘️</div>
-            <div class="game-title">Townscaper</div>
-            <div class="game-description">
-                Build colorful hexagonal cities on water. Place buildings, create heights, and design your perfect town with an intuitive interface.
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('deletion-game-improved/index.html', '_blank')">
-            <div class="game-icon">⚡</div>
-            <div class="game-title">The Deletion Game</div>
-            <div class="game-description">
-                Every step permanently deletes the ground behind you. Navigate to the exit without destroying your only path there. Enhanced with stats and effects!
-            </div>
-            <div class="game-status new">ENHANCED</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('uno/index.html', '_blank')">
-            <div class="game-icon">🃏</div>
-            <div class="game-title">UNO</div>
-            <div class="game-description">
-                Classic UNO card game with AI opponent. Features all special cards, wild color selection, and authentic UNO rules. Don't forget to call UNO!
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="launchTempleRun()">
-            <div class="game-icon">🏃</div>
-            <div class="game-title">Temple Run</div>
-            <div class="game-description">
-                Endless runner adventure! Jump, slide, and dodge obstacles while collecting coins. Use WASD/Arrow keys to move and SPACE to jump.
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('war-commander/index.html', '_blank')">
-            <div class="game-icon">⚔️</div>
-            <div class="game-title">War Commander</div>
-            <div class="game-description">
-                Strategic turn-based warfare. Deploy soldiers, tanks, and aircraft. Capture territories and outmaneuver your opponent in tactical combat.
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('neon-tetris/index.html', '_blank')">
-            <div class="game-icon">🧩</div>
-            <div class="game-title">Neon Tetris</div>
-            <div class="game-description">
-                Classic block-stacking puzzle with cyberpunk neon effects, particle systems, and progressive difficulty. Clear lines and chase high scores!
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('cyber-snake/index.html', '_blank')">
-            <div class="game-icon">🐍</div>
-            <div class="game-title">Cyber Snake</div>
-            <div class="game-description">
-                Futuristic snake game with power-ups, obstacles, and special effects. Collect food, avoid bombs, and use shields to survive!
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('space-invaders/index.html', '_blank')">
-            <div class="game-icon">👾</div>
-            <div class="game-title">Neon Space Invaders</div>
-            <div class="game-description">
-                Classic arcade shooter with neon effects and particle explosions. Defend Earth from waves of alien invaders with increasing difficulty!
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('racing-game/index.html', '_blank')">
-            <div class="game-icon">🏎️</div>
-            <div class="game-title">Neon Racer</div>
-            <div class="game-description">
-                High-speed futuristic racing with nitro boosts and collision physics. Dodge traffic, hit top speeds, and survive as long as possible!
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('chess/index.html', '_blank')">
-            <div class="game-icon">♕</div>
-            <div class="game-title">Chess Master</div>
-            <div class="game-description">
-                Classic chess with full piece movement, AI opponent, and elegant wooden board design. Features undo moves and captured piece tracking.
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('connect-four/index.html', '_blank')">
-            <div class="game-icon">🔴</div>
-            <div class="game-title">Connect Four</div>
-            <div class="game-description">
-                Drop colored discs to get four in a row! Features AI opponent, winning animations, and score tracking across multiple games.
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('tic-tac-toe/index.html', '_blank')">
-            <div class="game-icon">❌</div>
-            <div class="game-title">Ultimate Tic-Tac-Toe</div>
-            <div class="game-description">
-                Classic X's and O's with modern glass-morphism design. Features AI with 3 difficulty levels and comprehensive score tracking.
-            </div>
-            <div class="game-status">READY</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('neon-breakout/index.html', '_blank')">
-            <div class="game-icon">🔥</div>
-            <div class="game-title">Neon Breakout Ultimate</div>
-            <div class="game-description">
-                The ultimate brick-breaking experience! Features 5 power-ups, particle effects, laser shooting, multi-ball action, and progressive levels with stunning neon visuals.
-            </div>
-            <div class="game-status new">ULTIMATE</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('neon-impostor/index.html', '_blank')">
-            <div class="game-icon">🕵️</div>
-            <div class="game-title">Neon Impostor</div>
-            <div class="game-description">
-                Among Us style deduction game! Complete tasks as a crewmate or eliminate players as an impostor. Features voting, sabotage, AI players, and emergency meetings.
-            </div>
-            <div class="game-status new">SOCIAL</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('flappy-neon/index.html', '_blank')">
-            <div class="game-icon">🐦</div>
-            <div class="game-title">Flappy Neon</div>
-            <div class="game-description">
-                Production-level Flappy Bird clone with stunning neon visuals, 4 power-ups, particle effects, progressive difficulty, and mobile-responsive design. The ultimate finale!
-            </div>
-            <div class="game-status new">PRODUCTION</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('neon-rpg/index.html', '_blank')">
-            <div class="game-icon">⚔️</div>
-            <div class="game-title">Neon RPG</div>
-            <div class="game-description">
-                Full stack RPG adventure with character progression, inventory management, quest system, world exploration, combat mechanics, and equipment upgrades. Complete RPG experience!
-            </div>
-            <div class="game-status new">FULL STACK RPG</div>
-        </div>
-        
-        <div class="game-card" onclick="window.open('cyber-dungeon/index.html', '_blank')">
-            <div class="game-icon">🤖</div>
-            <div class="game-title">Cyber Dungeon</div>
-            <div class="game-description">
-                Roguelike RPG with procedural dungeon generation, skill trees, equipment system, turn-based combat, and cyberpunk aesthetics. Endless replayability!
-            </div>
-            <div class="game-status new">FULL STACK RPG</div>
-        </div>
-    </div>
-    
-    <div class="footer">
-        <p>🎮 Game Hub - Your Personal Gaming Collection 🎮</p>
-        <p>17 LEGENDARY Games Ready to Play!</p>
-    </div>
-    
-    <script>
-        function launchTempleRun() {
-            // For macOS, we'll show instructions to run the Python game
-            const instructions = `
-To play Temple Run:
+<div class="wrap">
+  <header class="mast">
+    <h1>Legendary arcade</h1>
+    <p id="lede">Pick a cartridge. Everything runs right here in the browser, with nothing to install.</p>
+  </header>
 
-1. Open Terminal
-2. Run: cd /Users/guest/games/temple-run
-3. Run: python3 temple_run.py
+  <div class="tools">
+    <div class="chips" id="chips" role="group" aria-label="Filter by kind"></div>
+    <a class="chip resume" id="resume" hidden></a>
+  </div>
 
-Controls:
-• SPACE - Jump
-• A/D or Arrow Keys - Move left/right
-• R - Restart when game over
+  <ul class="shelf" id="shelf"></ul>
+  <p class="empty" id="empty" hidden>No games of that kind yet. Choose another filter.</p>
 
-Collect coins and avoid obstacles!`;
-            
-            alert(instructions);
-            
-            // Also try to open terminal and run the command
-            try {
-                // This will work on some systems
-                window.location.href = 'file:///Users/guest/games/temple-run/run.sh';
-            } catch(e) {
-                console.log('Could not auto-launch, use manual instructions');
-            }
-        }
-    </script>
+  <footer class="foot">
+    <span>Built by Parthiv Gopa.</span>
+    <a href="https://github.com/Gpar377/Hangman">Source on GitHub</a>
+  </footer>
+</div>
+
+<dialog class="sheet" id="desktopSheet">
+  <form method="dialog">
+    <h2>Temple Run runs on your computer</h2>
+    <div class="sheet__body">
+      <p>It is a Python game built with pygame, so it opens in its own window instead of the browser. From the <b>legendary-games/temple-run</b> folder:</p>
+      <div class="cmd"><code id="cmd">pip install -r requirements.txt
+python3 temple_run.py</code></div>
+      <p><kbd>Space</kbd> jump &nbsp; <kbd>A</kbd> <kbd>D</kbd> or arrows to change lane &nbsp; <kbd>R</kbd> restart</p>
+    </div>
+    <div class="btns btns--wrap">
+      <button class="btn btn--primary" type="button" id="copyCmd">Copy commands</button>
+      <button class="btn" value="close">Close</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="assets/games.js"></script>
+<script>
+(function () {
+  const shelf = document.getElementById('shelf');
+  const chips = document.getElementById('chips');
+  const sheet = document.getElementById('desktopSheet');
+  const browserGames = GAMES.filter(g => !g.desktop).length;
+  document.getElementById('lede').textContent =
+    `Pick a cartridge. ${browserGames} games run right here in the browser with nothing to install, and one more runs in Python.`;
+
+  GAMES.forEach((g, i) => {
+    const li = document.createElement('li');
+    li.dataset.kind = g.kind;
+    if (i === 0) li.className = 'is-first';
+    const el = document.createElement(g.desktop ? 'button' : 'a');
+    el.className = 'cart';
+    el.style.setProperty('--plastic', g.plastic);
+    el.style.setProperty('--on-plastic', g.ink);
+    if (g.desktop) { el.type = 'button'; el.addEventListener('click', () => sheet.showModal()); }
+    else el.href = g.path + 'index.html';
+    const text = `<div><h2 class="cart__name">${g.title}</h2><p class="cart__blurb">${g.blurb}</p>
+        ${i === 0 ? `<p class="cart__meta"><b>${g.kind}</b><span>${g.input}</span></p>` : ''}</div>`;
+    el.innerHTML = `<div class="cart__label">
+        <div class="cart__art">${sprite(g.art, g.ink === '#FFFFFF' ? '#FFC629' : '#fff')}</div>
+        ${i === 0 ? text : `<h2 class="cart__name">${g.title}</h2><p class="cart__blurb">${g.blurb}</p>
+        <p class="cart__meta"><b>${g.kind}</b><span>${g.input}</span></p>`}
+      </div>`;
+    li.append(el);
+    shelf.append(li);
+  });
+
+  /* filter chips, built from the kinds that exist */
+  const kinds = ['All', ...new Set(GAMES.map(g => g.kind))];
+  let current = 'All';
+  function apply(kind) {
+    current = kind;
+    let shown = 0;
+    [...shelf.children].forEach((li, i) => {
+      const on = kind === 'All' || li.dataset.kind === kind;
+      li.hidden = !on; if (on) shown++;
+      li.classList.toggle('is-first', i === 0 && kind === 'All');
+    });
+    [...chips.children].forEach(c => c.setAttribute('aria-pressed', c.dataset.kind === kind));
+    document.getElementById('empty').hidden = shown > 0;
+    try { sessionStorage.setItem('arcade:filter', kind); } catch (e) {}
+  }
+  kinds.forEach(k => {
+    const n = k === 'All' ? GAMES.length : GAMES.filter(g => g.kind === k).length;
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.dataset.kind = k;
+    b.innerHTML = `${k}<small>${n}</small>`;
+    b.addEventListener('click', () => apply(k));
+    chips.append(b);
+  });
+  let saved = 'All';
+  try { saved = sessionStorage.getItem('arcade:filter') || 'All'; } catch (e) {}
+  apply(kinds.includes(saved) ? saved : 'All');
+
+  /* pick up where you left off */
+  try {
+    const last = GAMES.find(g => g.id === localStorage.getItem('arcade:last') && !g.desktop);
+    if (last) {
+      const r = document.getElementById('resume');
+      r.href = last.path + 'index.html';
+      r.textContent = `Keep playing ${last.title}`;
+      r.hidden = false;
+    }
+  } catch (e) {}
+
+  sheet.addEventListener('click', e => { if (e.target === sheet) sheet.close(); });
+  document.getElementById('copyCmd').addEventListener('click', async e => {
+    const btn = e.currentTarget;
+    try { await navigator.clipboard.writeText(document.getElementById('cmd').textContent); btn.textContent = 'Copied'; }
+    catch (err) { btn.textContent = 'Select the text to copy'; }
+    setTimeout(() => (btn.textContent = 'Copy commands'), 1800);
+  });
+})();
+</script>
 </body>
 </html>
