@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asteroids | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+</head>
+<body data-game="asteroids" data-pad="arrows space:Fire p:Pause">
+
+<main class="console console--mid">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Score</span><span class="read__value" id="score">0</span></div>
+    <div class="read "><span class="read__label">Ships</span><span class="read__value" id="lives">3</span></div>
+    <div class="read "><span class="read__label">Wave</span><span class="read__value" id="wave">0</span></div>
+    <div class="read lcd__push"><span class="read__label">Best</span><span class="read__value" id="best">0</span></div>
+  </div>
+  <div class="screen">
+    <canvas id="gameCanvas" width="800" height="600" aria-label="Asteroids playfield"></canvas>
+    <div class="overlay" id="ready" style="display:block;background:rgba(10,13,18,.55)">
+      <div class="overlay__in">
+        <h2>Asteroids</h2>
+        <p>Turn, thrust and shoot. Big rocks split into smaller, faster ones.</p>
+        <div class="btns"><button class="btn" type="button" id="startBtn">Start game</button></div>
+      </div>
+    </div>
+    <div class="overlay" id="gameOver">
+      <div class="overlay__in">
+        <h2>Game over</h2>
+        <p>Score <span id="finalScore">0</span> &nbsp; Reached wave <span id="finalWave">1</span></p>
+        <div class="btns"><button class="btn" type="button" id="againBtn">Play again</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <span><kbd>&larr;</kbd><kbd>&rarr;</kbd> turn</span>
+    <span><kbd>&uarr;</kbd> thrust</span>
+    <span><kbd>Space</kbd> fire</span>
+    <span><kbd>P</kbd> pause</span>
+    <span><kbd>R</kbd> restart</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Your ship drifts in space and wraps around the edges of the screen, and so do the rocks.</li>
+  <li>Large rocks split in two when shot, then split again. Small rocks are worth the most: 20, 50 and 100 points.</li>
+  <li>Clear every rock to bring in the next, bigger wave. You have three ships, and each new ship blinks while it is safe.</li>
+</ul>
+<p><kbd>&larr;</kbd><kbd>&rarr;</kbd> turn &nbsp; <kbd>&uarr;</kbd> thrust &nbsp; <kbd>Space</kbd> fire &nbsp; <kbd>P</kbd> pause &nbsp; <kbd>R</kbd> restart</p>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
