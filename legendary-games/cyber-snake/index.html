@@ -1,191 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Cyber Snake</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e);
-            color: #00ff41;
-            height: 100vh;
-            overflow: hidden;
-        }
-        
-        .game-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            position: relative;
-        }
-        
-        .game-board {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        
-        canvas {
-            border: 3px solid #00ff41;
-            border-radius: 10px;
-            box-shadow: 0 0 30px #00ff41, inset 0 0 20px rgba(0, 255, 65, 0.1);
-            background: #000;
-        }
-        
-        .sidebar {
-            width: 250px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-        }
-        
-        .score-section {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .score-value {
-            font-size: 28px;
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
-            font-weight: bold;
-        }
-        
-        .power-up {
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid #00ff41;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 5px 0;
-            font-size: 12px;
-        }
-        
-        .power-up.active {
-            background: rgba(0, 255, 65, 0.3);
-            box-shadow: 0 0 10px #00ff41;
-        }
-        
-        .controls {
-            font-size: 12px;
-            line-height: 1.6;
-            margin-top: 20px;
-        }
-        
-        .key {
-            color: #ffff00;
-            font-weight: bold;
-        }
-        
-        .game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            border: 3px solid #ff0040;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            color: #ff0040;
-            font-size: 24px;
-            display: none;
-            box-shadow: 0 0 40px #ff0040;
-        }
-        
-        .restart-btn {
-            background: linear-gradient(45deg, #ff0040, #ff4070);
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            margin-top: 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .restart-btn:hover {
-            background: linear-gradient(45deg, #ff4070, #ff6090);
-            transform: translateY(-2px);
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .pulse {
-            animation: pulse 1s ease-in-out infinite;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Snake | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
 </head>
-<body>
-    <div class="game-container">
-        <div class="game-board">
-            <div class="sidebar">
-                <div class="score-section">
-                    <h3>SCORE</h3>
-                    <div class="score-value" id="score">0</div>
-                </div>
-                
-                <div class="score-section">
-                    <h3>HIGH SCORE</h3>
-                    <div class="score-value" id="highScore">0</div>
-                </div>
-                
-                <div class="score-section">
-                    <h3>LENGTH</h3>
-                    <div class="score-value" id="length">1</div>
-                </div>
-                
-                <div>
-                    <h4>POWER-UPS</h4>
-                    <div class="power-up" id="speedBoost">
-                        ⚡ Speed Boost: <span id="speedTime">0</span>s
-                    </div>
-                    <div class="power-up" id="shield">
-                        🛡️ Shield: <span id="shieldTime">0</span>s
-                    </div>
-                    <div class="power-up" id="multiplier">
-                        💎 2x Score: <span id="multiplierTime">0</span>s
-                    </div>
-                </div>
-                
-                <div class="controls">
-                    <h4>CONTROLS</h4>
-                    <p><span class="key">WASD</span> or <span class="key">Arrows</span> - Move</p>
-                    <p><span class="key">SPACE</span> - Pause</p>
-                    <p><span class="key">R</span> - Restart</p>
-                    
-                    <h4 style="margin-top: 15px;">ITEMS</h4>
-                    <p>🍎 Food: +10 points</p>
-                    <p>⚡ Speed Boost: Faster movement</p>
-                    <p>🛡️ Shield: Pass through walls</p>
-                    <p>💎 Multiplier: Double points</p>
-                    <p>💣 Bomb: Avoid at all costs!</p>
-                </div>
-            </div>
-            
-            <canvas id="gameCanvas" width="600" height="600"></canvas>
-        </div>
-        
-        <div class="game-over" id="gameOver">
-            <div class="pulse">GAME OVER</div>
-            <div style="font-size: 18px; margin: 15px 0;">
-                Final Score: <span id="finalScore">0</span>
-            </div>
-            <div style="font-size: 14px; margin: 10px 0;">
-                Snake Length: <span id="finalLength">1</span>
-            </div>
-            <button class="restart-btn" onclick="game.restart()">PLAY AGAIN</button>
-        </div>
+<body data-game="snake" data-pad="arrows space:Pause r:Restart">
+
+<main class="console console--narrow">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Score</span><span class="read__value" id="score">0</span></div>
+    <div class="read "><span class="read__label">Length</span><span class="read__value" id="length">1</span></div>
+    <div class="read lcd__push"><span class="read__label">Best</span><span class="read__value" id="highScore">0</span></div>
+  </div>
+  <div class="screen">
+    <canvas id="gameCanvas" width="600" height="600" aria-label="Snake playfield"></canvas>
+    <div class="overlay" id="gameOver">
+      <div class="overlay__in">
+        <h2>Game over</h2>
+        <p>Score <span id="finalScore">0</span> &nbsp; Length <span id="finalLength">1</span></p>
+        <div class="btns"><button class="btn" type="button" onclick="game.restart()">Play again</button></div>
+      </div>
     </div>
-    
-    <script src="snake.js"></script>
+  </div>
+  <div class="legend">
+    <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to steer</span>
+    <span><kbd>Space</kbd> pause</span>
+    <span><kbd>R</kbd> restart</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Press any arrow key to start. Steer into food to grow and score 10 points.</li>
+  <li>Hitting a wall, your own tail, or a bomb ends the run.</li>
+</ul>
+<h3>Pick-ups</h3>
+<ul>
+  <li><b>Speed boost</b> makes the snake faster for a while.</li>
+  <li><b>Shield</b> lets you pass through walls.</li>
+  <li><b>Multiplier</b> doubles your points.</li>
+  <li><b>Bomb</b> is the one to avoid.</li>
+</ul>
+<p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows steer &nbsp; <kbd>Space</kbd> pause &nbsp; <kbd>R</kbd> restart</p>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="snake.js"></script>
 </body>
 </html>
