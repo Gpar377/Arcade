@@ -645,7 +645,7 @@ class FlappyNeon {
     
     updateUI() {
         document.getElementById('score').textContent = this.score;
-        document.getElementById('highScore').textContent = `Best: ${this.highScore}`;
+        document.getElementById('highScore').textContent = this.highScore;
         document.getElementById('difficulty').textContent = this.difficulty;
     }
     
