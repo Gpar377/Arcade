@@ -1,275 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Flappy Neon - Ultimate Edition</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Orbitron', monospace;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
-            color: #00ff00;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .game-container {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            height: 600px;
-            background: linear-gradient(180deg, #001122, #000011);
-            border: 3px solid #00ff00;
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
-            overflow: hidden;
-        }
-        
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-            background: linear-gradient(180deg, #001133 0%, #000022 50%, #001100 100%);
-        }
-        
-        .ui-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        .score {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 48px;
-            font-weight: 900;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1); }
-        }
-        
-        .high-score {
-            position: absolute;
-            top: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 16px;
-            color: #ffff00;
-            text-shadow: 0 0 10px #ffff00;
-        }
-        
-        .start-screen {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 40px;
-            border-radius: 20px;
-            border: 2px solid #00ff00;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
-            pointer-events: all;
-        }
-        
-        .game-title {
-            font-size: 36px;
-            font-weight: 900;
-            color: #00ff00;
-            text-shadow: 0 0 20px #00ff00;
-            margin-bottom: 20px;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 20px #00ff00; }
-            to { text-shadow: 0 0 40px #00ff00, 0 0 60px #00ff00; }
-        }
-        
-        .instructions {
-            font-size: 14px;
-            color: #00ffff;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        
-        .start-btn {
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #00ff00, #00cc00);
-            border: none;
-            border-radius: 25px;
-            color: #000;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
-        }
-        
-        .start-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 255, 0, 0.5);
-            background: linear-gradient(45deg, #00ff44, #00ee00);
-        }
-        
-        .game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            background: rgba(0, 0, 0, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            border: 2px solid #ff0040;
-            box-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
-            pointer-events: all;
-            display: none;
-        }
-        
-        .game-over-title {
-            font-size: 32px;
-            font-weight: 900;
-            color: #ff0040;
-            text-shadow: 0 0 20px #ff0040;
-            margin-bottom: 20px;
-        }
-        
-        .final-score {
-            font-size: 24px;
-            color: #00ffff;
-            margin-bottom: 10px;
-        }
-        
-        .new-record {
-            font-size: 16px;
-            color: #ffff00;
-            margin-bottom: 20px;
-            animation: flash 1s ease-in-out infinite;
-        }
-        
-        @keyframes flash {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .restart-btn {
-            padding: 12px 25px;
-            background: linear-gradient(45deg, #ff0040, #ff4070);
-            border: none;
-            border-radius: 20px;
-            color: white;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 5px;
-        }
-        
-        .restart-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 0, 64, 0.4);
-        }
-        
-        .controls-hint {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 12px;
-            color: #888;
-            text-align: center;
-        }
-        
-        .fps-counter {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: #00ff00;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 5px 8px;
-            border-radius: 5px;
-        }
-        
-        .difficulty {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 12px;
-            color: #ffff00;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 5px 8px;
-            border-radius: 5px;
-        }
-        
-        @media (max-width: 480px) {
-            .game-container {
-                width: 100vw;
-                height: 100vh;
-                border-radius: 0;
-                border: none;
-            }
-            
-            .game-title { font-size: 28px; }
-            .score { font-size: 36px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flappy Neon | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.console { max-width: 520px; }
+.screen canvas { touch-action: manipulation; cursor: pointer; }
+.record { color: #FFC629 !important; font-weight: 700; }
+</style>
 </head>
-<body>
-    <div class="game-container">
-        <canvas id="gameCanvas" width="400" height="600"></canvas>
-        
-        <div class="ui-overlay">
-            <div class="score" id="score">0</div>
-            <div class="high-score" id="highScore">Best: 0</div>
-            <div class="fps-counter" id="fpsCounter">FPS: 60</div>
-            <div class="difficulty" id="difficulty">Easy</div>
-            
-            <div class="start-screen" id="startScreen">
-                <div class="game-title">FLAPPY NEON</div>
-                <div class="instructions">
-                    🚀 Navigate through the neon pipes<br>
-                    🎯 Tap or press SPACE to fly<br>
-                    💎 Collect power-ups for bonuses<br>
-                    ⚡ Survive as long as possible!
-                </div>
-                <button class="start-btn" onclick="game.startGame()">START GAME</button>
-            </div>
-            
-            <div class="game-over" id="gameOverScreen">
-                <div class="game-over-title">GAME OVER</div>
-                <div class="final-score" id="finalScore">Score: 0</div>
-                <div class="new-record" id="newRecord" style="display: none;">🏆 NEW RECORD! 🏆</div>
-                <button class="restart-btn" onclick="game.restartGame()">Play Again</button>
-                <button class="restart-btn" onclick="game.showStartScreen()">Main Menu</button>
-            </div>
-            
-            <div class="controls-hint">
-                Tap screen or press SPACE to fly
-            </div>
-        </div>
+<body data-game="flappy" data-pad="space:Flap">
+
+<main class="console console--narrow">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Score</span><span class="read__value" id="score">0</span></div>
+    <div class="read read--text"><span class="read__label">Difficulty</span><span class="read__value" id="difficulty">Easy</span></div>
+    <div class="read lcd__push"><span class="read__label">Best</span><span class="read__value" id="highScore">0</span></div>
+  </div>
+  <div class="screen">
+    <canvas id="gameCanvas" width="400" height="600" aria-label="Flappy playfield"></canvas>
+    <span id="fpsCounter" hidden></span>
+    <div class="overlay" id="startScreen" style="display:block">
+      <div class="overlay__in">
+        <h2>Ready?</h2>
+        <p>Tap, click or press Space to fly. Slip through the gaps and grab the power-ups.</p>
+        <div class="btns"><button class="btn" type="button" onclick="game.startGame()">Start game</button></div>
+      </div>
     </div>
-    
-    <script src="flappy.js"></script>
+    <div class="overlay" id="gameOverScreen">
+      <div class="overlay__in">
+        <h2>Game over</h2>
+        <p id="finalScore">Score: 0</p>
+        <p class="record" id="newRecord" style="display:none">New best score</p>
+        <div class="btns">
+          <button class="btn" type="button" onclick="game.restartGame()">Play again</button>
+          <button class="btn" type="button" onclick="game.showStartScreen()">Back to start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="legend"><span><kbd>Space</kbd> or click to flap</span></div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Each flap pushes you up; gravity does the rest. Fly through the gaps between the pipes.</li>
+  <li>Every pipe you pass is a point. Touch a pipe or the ground and the run is over.</li>
+  <li>Power-ups drift past now and then. Fly into them.</li>
+  <li>The pipes come faster as your score climbs: Easy, Medium at 15, Hard at 30, Insane at 50.</li>
+</ul>
+<p><kbd>Space</kbd>, click or tap to flap</p>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="flappy.js"></script>
 </body>
 </html>

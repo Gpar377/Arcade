@@ -9,8 +9,9 @@ class Chess {
         this.capturedPieces = { white: [], black: [] };
         
         this.pieces = {
-            white: { king: '♔', queen: '♕', rook: '♖', bishop: '♗', knight: '♘', pawn: '♙' },
-            black: { king: '♚', queen: '♛', rook: '♜', bishop: '♝', knight: '♞', pawn: '♟' }
+            // same solid glyphs for both sides; colour comes from CSS. \uFE0E stops phones swapping in emoji.
+            white: { king: '♚\uFE0E', queen: '♛\uFE0E', rook: '♜\uFE0E', bishop: '♝\uFE0E', knight: '♞\uFE0E', pawn: '♟\uFE0E' },
+            black: { king: '♚\uFE0E', queen: '♛\uFE0E', rook: '♜\uFE0E', bishop: '♝\uFE0E', knight: '♞\uFE0E', pawn: '♟\uFE0E' }
         };
         
         this.initBoard();
@@ -52,6 +53,7 @@ class Chess {
                 const piece = this.board[row][col];
                 if (piece) {
                     square.textContent = this.pieces[piece.color][piece.type];
+                    square.dataset.piece = piece.color;
                 }
                 
                 square.addEventListener('click', () => this.handleSquareClick(row, col));
@@ -75,7 +77,8 @@ class Chess {
                 return;
             }
             
-            if (this.isValidMove(selectedRow, selectedCol, row, col)) {
+            // only allow moves the selected piece can actually make
+            if (this.getPossibleMoves(selectedRow, selectedCol).some(([r, c]) => r === row && c === col)) {
                 this.makeMove(selectedRow, selectedCol, row, col);
                 this.clearSelection();
                 this.switchPlayer();
@@ -97,8 +100,9 @@ class Chess {
     }
     
     selectSquare(row, col) {
-        this.selectedSquare = [row, col];
+        // highlightMoves() clears the old selection first, so record the new one afterwards
         this.highlightMoves(row, col);
+        this.selectedSquare = [row, col];
     }
     
     clearSelection() {
@@ -278,7 +282,8 @@ class Chess {
         const piece = this.board[fromRow][fromCol];
         const target = this.board[toRow][toCol];
         
-        if (!piece || piece.color !== this.currentPlayer) return false;
+        // whose turn it is is checked by the caller; this also has to answer for the side not moving
+        if (!piece) return false;
         if (target && target.color === piece.color) return false;
         
         return true;
@@ -331,7 +336,12 @@ class Chess {
         }
         
         if (allMoves.length > 0) {
-            const randomMove = allMoves[Math.floor(Math.random() * allMoves.length)];
+            // take the most valuable piece on offer; otherwise play a random move
+            const value = { pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, king: 100 };
+            const gain = m => { const t = this.board[m.to[0]][m.to[1]]; return t ? value[t.type] : 0; };
+            const best = Math.max(...allMoves.map(gain));
+            const pool = best > 0 ? allMoves.filter(m => gain(m) === best) : allMoves;
+            const randomMove = pool[Math.floor(Math.random() * pool.length)];
             this.makeMove(randomMove.from[0], randomMove.from[1], randomMove.to[0], randomMove.to[1]);
             this.switchPlayer();
         }
@@ -353,18 +363,24 @@ class Chess {
         const blackCaptured = document.getElementById('blackCaptured');
         
         whiteCaptured.innerHTML = this.capturedPieces.white.map(piece => 
-            this.pieces[piece.color][piece.type]).join(' ');
+            `<span class="cap ${piece.color}">${this.pieces[piece.color][piece.type]}</span>`).join('');
         blackCaptured.innerHTML = this.capturedPieces.black.map(piece => 
-            this.pieces[piece.color][piece.type]).join(' ');
+            `<span class="cap ${piece.color}">${this.pieces[piece.color][piece.type]}</span>`).join('');
     }
     
     checkGameEnd() {
-        // Simple checkmate detection (basic implementation)
-        const hasValidMoves = this.hasValidMoves(this.currentPlayer === 'white' ? 'black' : 'white');
-        
-        if (!hasValidMoves) {
+        // This version has no check rules, so the game is won by taking the king.
+        const mover = this.currentPlayer;
+        const other = mover === 'white' ? 'black' : 'white';
+        const name = c => c.charAt(0).toUpperCase() + c.slice(1);
+        const kingAlive = this.board.some(r => r.some(p => p && p.type === 'king' && p.color === other));
+
+        if (!kingAlive || !this.hasValidMoves(other)) {
             this.gameOver = true;
-            document.getElementById('gameResult').textContent = `${this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1)} Wins!`;
+            document.getElementById('gameResult').textContent = `${name(mover)} wins`;
+            document.getElementById('gameMessage').textContent = kingAlive
+                ? `${name(other)} has no moves left.`
+                : `${name(mover)} took the king.`;
             document.getElementById('gameOver').style.display = 'block';
         }
     }
@@ -416,7 +432,7 @@ class Chess {
     
     toggleAI() {
         this.aiEnabled = !this.aiEnabled;
-        alert(`AI ${this.aiEnabled ? 'enabled' : 'disabled'}`);
+        alert(this.aiEnabled ? 'The computer now plays Black.' : 'Computer opponent off. Two players.');
     }
 }
 

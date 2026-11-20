@@ -1,210 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Ultimate Tic-Tac-Toe</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: white;
-        }
-        
-        .game-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-        
-        .game-title {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .current-player {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        
-        .score {
-            display: flex;
-            gap: 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 5px;
-            margin: 0 auto 30px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 15px;
-        }
-        
-        .cell {
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 10px;
-            font-size: 36px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .cell:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .cell.x {
-            color: #e74c3c;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .cell.o {
-            color: #3498db;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .cell.winning {
-            background: #f1c40f !important;
-            animation: pulse 1s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .difficulty {
-            margin-top: 20px;
-        }
-        
-        .difficulty select {
-            padding: 8px 16px;
-            border-radius: 5px;
-            border: none;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            font-weight: bold;
-        }
-        
-        .game-over {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            display: none;
-            z-index: 1000;
-            border: 2px solid #f1c40f;
-        }
-        
-        .game-over h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            color: #f1c40f;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tic-Tac-Toe | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.console { max-width: 600px; }
+.board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(100%, 56vh, 460px); aspect-ratio: 1; }
+.cell { appearance: none; border: 0; border-radius: 14px; background: #1B212B; color: #fff; cursor: pointer; font: 800 clamp(44px, 12vh, 96px)/1 var(--display); box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .35); }
+.cell:hover:empty { background: #252D39; }
+.cell.o { color: var(--plastic); }
+.cell.winning { background: var(--plastic); color: var(--on-plastic); }
+.opts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.opts label { font-weight: 600; font-size: 14px; }
+</style>
 </head>
-<body>
-    <div class="game-container">
-        <h1 class="game-title">❌ TIC-TAC-TOE ⭕</h1>
-        
-        <div class="game-info">
-            <div class="current-player">
-                Current Player: <span id="currentPlayer">X</span>
-            </div>
-            <div class="score">
-                <div>X Wins: <span id="xScore">0</span></div>
-                <div>O Wins: <span id="oScore">0</span></div>
-                <div>Draws: <span id="drawScore">0</span></div>
-            </div>
-        </div>
-        
-        <div class="board" id="gameBoard"></div>
-        
-        <div class="controls">
-            <button class="btn" onclick="game.newGame()">New Game</button>
-            <button class="btn" onclick="game.toggleAI()">Toggle AI</button>
-            <button class="btn" onclick="game.resetScore()">Reset Score</button>
-        </div>
-        
-        <div class="difficulty">
-            <label for="difficulty">AI Difficulty: </label>
-            <select id="difficulty" onchange="game.setDifficulty(this.value)">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard" selected>Hard</option>
-            </select>
-        </div>
+<body data-game="tictactoe">
+
+<main class="console console--narrow">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Turn</span><span class="read__value" id="currentPlayer">X</span></div>
+    <div class="read lcd__push"><span class="read__label">X wins</span><span class="read__value" id="xScore">0</span></div>
+    <div class="read "><span class="read__label">O wins</span><span class="read__value" id="oScore">0</span></div>
+    <div class="read "><span class="read__label">Draws</span><span class="read__value" id="drawScore">0</span></div>
+  </div>
+  <div class="screen">
+    <div class="board" id="gameBoard" aria-label="Tic-tac-toe board"></div>
+    <div class="overlay" id="gameOver">
+      <div class="overlay__in">
+        <h2 id="gameResult">Game over</h2>
+        <p id="gameMessage"></p>
+        <div class="btns"><button class="btn" type="button" onclick="game.newGame(); document.getElementById('gameOver').style.display='none';">Play again</button></div>
+      </div>
     </div>
-    
-    <div class="game-over" id="gameOver">
-        <h2 id="gameResult">Game Over</h2>
-        <p id="gameMessage">Great game!</p>
-        <button class="btn" onclick="game.newGame(); document.getElementById('gameOver').style.display='none';">Play Again</button>
-    </div>
-    
-    <script src="tictactoe.js"></script>
+  </div>
+  <div class="opts">
+    <button class="btn btn--primary" type="button" onclick="game.newGame()">New game</button>
+    <button class="btn" type="button" aria-pressed="false" onclick="game.toggleAI(); this.setAttribute('aria-pressed', game.aiEnabled)">Play against the computer</button>
+    <label for="difficulty">Computer level</label>
+    <select class="pick" id="difficulty" onchange="game.setDifficulty(this.value)">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard" selected>Hard</option>
+    </select>
+    <button class="btn btn--danger" type="button" onclick="game.resetScore()">Reset score</button>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>X goes first. Take turns claiming a square.</li>
+  <li>Three in a row wins: across, down or diagonally. A full board with no line is a draw.</li>
+  <li>Switch on the computer to play O against it, and pick how hard it tries. On Hard it does not lose.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="tictactoe.js"></script>
 </body>
 </html>

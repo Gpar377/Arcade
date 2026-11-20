@@ -60,7 +60,7 @@ class EnhancedDeletionGame {
         }
         
         this.updateStats();
-        this.updateStatus("Navigate carefully - there's no going back!");
+        this.updateStatus("Navigate carefully. There is no going back.");
     }
     
     setupEventListeners() {
@@ -116,7 +116,7 @@ class EnhancedDeletionGame {
             this.gameLost = true;
             this.screenShake = 10;
             this.createExplosion(newX * this.TILE_SIZE, newY * this.TILE_SIZE);
-            this.updateStatus("GAME OVER! You hit an obstacle!", 'lose');
+            this.updateStatus("You hit an obstacle. Press R to try again.", 'lose');
             return;
         }
         
@@ -143,7 +143,7 @@ class EnhancedDeletionGame {
         if (this.player.x === this.exit.x && this.player.y === this.exit.y) {
             this.gameWon = true;
             this.createVictoryParticles();
-            this.updateStatus("VICTORY! You reached the exit!", 'win');
+            this.updateStatus("You reached the exit.", 'win');
         }
         
         this.updateStats();
@@ -407,5 +407,5 @@ class EnhancedDeletionGame {
 
 // Initialize game
 window.addEventListener('load', () => {
-    new EnhancedDeletionGame();
+    window.game = new EnhancedDeletionGame();
 });

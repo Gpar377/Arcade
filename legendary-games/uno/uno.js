@@ -117,7 +117,7 @@ class UnoGame {
         
         const card = this.playerHand[cardIndex];
         if (!this.isValidPlay(card)) {
-            this.showMessage('Invalid move!');
+            this.showMessage('That card does not match the colour or number.');
             return;
         }
         
@@ -131,7 +131,7 @@ class UnoGame {
         // Check for win
         if (this.playerHand.length === 0) {
             this.gameOver = true;
-            this.showMessage('🎉 You Win! 🎉');
+            this.showMessage('You win. Press New game to play again.');
             return;
         }
         
@@ -251,7 +251,7 @@ class UnoGame {
             this.computerHand.splice(cardIndex, 1);
             this.discardPile.push(cardToPlay);
             
-            this.showMessage(`Computer played ${cardToPlay.value} ${cardToPlay.color}`);
+            this.showMessage(`Computer played ${this.cardName(cardToPlay)}`);
             
             // Handle special cards
             this.handleSpecialCard(cardToPlay);
@@ -259,7 +259,7 @@ class UnoGame {
             // Check for win
             if (this.computerHand.length === 0) {
                 this.gameOver = true;
-                this.showMessage('💻 Computer Wins! 💻');
+                this.showMessage('The computer wins. Press New game to play again.');
                 return;
             }
             
@@ -288,7 +288,7 @@ class UnoGame {
         if (this.playerHand.length === 1) {
             this.showMessage('UNO called!');
         } else {
-            this.showMessage('You can only call UNO with 1 card!');
+            this.showMessage('You can only call UNO with one card left.');
         }
     }
     
@@ -338,19 +338,34 @@ class UnoGame {
         const topCard = this.discardPile[this.discardPile.length - 1];
         if (topCard) {
             discardPileEl.className = `card ${topCard.color}`;
-            discardPileEl.textContent = topCard.value.toString().toUpperCase();
+            discardPileEl.textContent = this.cardLabel(topCard);
         }
+        const colorNow = document.getElementById('colorNow');
+        if (colorNow) colorNow.className = this.currentColor || '';
     }
-    
+
+    // short symbol shown on the card face
+    cardLabel(card) {
+        const labels = { skip: '\u2298', reverse: '\u21C4', draw2: '+2', wild: '\u2605', wild4: '+4' };
+        return labels[card.value] || card.value.toString().toUpperCase();
+    }
+
+    cardName(card) {
+        const names = { skip: 'skip', reverse: 'reverse', draw2: 'draw two', wild: 'wild', wild4: 'wild draw four' };
+        return `${card.color === 'wild' ? '' : card.color + ' '}${names[card.value] || card.value}`;
+    }
+
     createCardElement(card) {
         const cardEl = document.createElement('div');
         cardEl.className = `card ${card.color}`;
-        cardEl.textContent = card.value.toString().toUpperCase();
+        cardEl.textContent = this.cardLabel(card);
+        cardEl.setAttribute('role', 'button');
+        cardEl.setAttribute('aria-label', this.cardName(card));
         return cardEl;
     }
 }
 
 // Initialize game
 window.addEventListener('load', () => {
-    new UnoGame();
+    window.game = new UnoGame();
 });

@@ -34,8 +34,9 @@ class WarCommander {
     
     handleCanvasClick(e) {
         const rect = this.canvas.getBoundingClientRect();
-        const x = Math.floor((e.clientX - rect.left) / this.gridSize);
-        const y = Math.floor((e.clientY - rect.top) / this.gridSize);
+        // the canvas is scaled to fit the screen, so convert from CSS pixels to canvas pixels
+        const x = Math.floor((e.clientX - rect.left) * (this.canvas.width / rect.width) / this.gridSize);
+        const y = Math.floor((e.clientY - rect.top) * (this.canvas.height / rect.height) / this.gridSize);
         
         if (this.selectedAction === 'deploy') {
             this.deployUnit(x, y);
@@ -175,8 +176,8 @@ class WarCommander {
         
         const turnIndicator = document.getElementById('turnIndicator');
         turnIndicator.innerHTML = this.currentPlayer === 1 ? 
-            '<span class="player1">Player 1\'s Turn</span>' : 
-            '<span class="player2">Player 2\'s Turn</span>';
+            '<span class="player1">Blue</span>' : 
+            '<span class="player2">Red</span>';
     }
     
     draw() {
@@ -280,5 +281,5 @@ class WarCommander {
 }
 
 window.addEventListener('load', () => {
-    new WarCommander();
+    window.game = new WarCommander();
 });

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minesweeper | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.screen { overflow: auto; place-items: safe center; }
+.field { --cell: clamp(26px, min(calc((100vw - 90px) / var(--cols)), calc(62vh / 16)), 40px); display: grid; grid-template-columns: repeat(var(--cols), var(--cell)); gap: 3px; padding: 4px; }
+.field[data-cols="9"] { --cell: clamp(30px, min(calc((100vw - 90px) / 9), 6vh), 52px); }
+.cell {
+  appearance: none; border: 0; padding: 0; width: var(--cell); height: var(--cell); border-radius: 5px; cursor: pointer;
+  background: #CDD4DF; color: #14161B; font: 800 calc(var(--cell) * .55)/1 var(--display);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .22), inset 0 2px 0 rgba(255, 255, 255, .6); touch-action: manipulation;
+}
+.cell:hover:not(.is-open) { background: #E0E5EC; }
+.cell.is-open { background: #1B212B; cursor: default; box-shadow: none; }
+.cell.is-flag { color: #E5484D; }
+.cell[data-n="1"] { color: #6CB6FF; } .cell[data-n="2"] { color: #7EE081; } .cell[data-n="3"] { color: #FF7A7A; }
+.cell[data-n="4"] { color: #C6A6FF; } .cell[data-n="5"] { color: #FFB86B; } .cell[data-n="6"] { color: #5FE3D0; }
+.cell[data-n="7"] { color: #fff; } .cell[data-n="8"] { color: #9AA3B2; }
+.cell.is-mine { background: #3A1518; color: #fff; }
+.cell.is-hit { background: #E5484D; }
+.cell.is-wrong { background: #5A4A12; text-decoration: line-through; }
+.opts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.opts .sp { flex: 1; }
+</style>
+</head>
+<body data-game="minesweeper">
+
+<main class="console">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Mines left</span><span class="read__value" id="minesLeft">10</span></div>
+    <div class="read "><span class="read__label">Time</span><span class="read__value" id="time">0:00</span></div>
+    <div class="read lcd__push"><span class="read__label">Best time</span><span class="read__value" id="best">--</span></div>
+  </div>
+  <div class="opts">
+    <div class="btns btns--wrap" role="group" aria-label="Difficulty">
+      <button class="btn" type="button" data-level="easy">Easy, 9 &times; 9</button>
+      <button class="btn" type="button" data-level="medium">Medium, 16 &times; 16</button>
+      <button class="btn" type="button" data-level="hard">Hard, 30 &times; 16</button>
+    </div>
+    <span class="sp"></span>
+    <button class="btn" type="button" id="flagBtn" aria-pressed="false">Flag mode off</button>
+    <button class="btn btn--primary" type="button" id="newBtn">New game</button>
+  </div>
+  <div class="screen">
+    <div class="field" id="field" role="grid" aria-label="Minefield"></div>
+    <div class="overlay" id="result">
+      <div class="overlay__in">
+        <h2 id="resultTitle">Field cleared</h2>
+        <p id="resultText"></p>
+        <div class="btns"><button class="btn" type="button" id="againBtn">Play again</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <span>Click to reveal</span>
+    <span>Right-click or <kbd>F</kbd> to flag</span>
+    <span>Arrows move, <kbd>Enter</kbd> reveals</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Reveal every square that is not a mine. Your first square is always safe.</li>
+  <li>A number tells you how many of the eight squares around it hold mines.</li>
+  <li>Flag a square you think is a mine: right-click, press <kbd>F</kbd>, or long-press on a touch screen. Flag mode makes every tap place a flag.</li>
+  <li>Click a number that already has that many flags around it to open the rest of its neighbours at once.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

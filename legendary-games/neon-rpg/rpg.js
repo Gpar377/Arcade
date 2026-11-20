@@ -66,8 +66,9 @@ class NeonRPG {
     }
 
     init() {
-        this.canvas.width = this.canvas.offsetWidth;
-        this.canvas.height = this.canvas.offsetHeight;
+        // fixed logical size; CSS scales the map to fit the screen
+        this.canvas.width = 620;
+        this.canvas.height = 440;
         
         this.player.quests = [...this.quests];
         this.updateUI();
@@ -184,8 +185,8 @@ class NeonRPG {
             // Add click handler
             this.canvas.onclick = (e) => {
                 const rect = this.canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+                const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
                 
                 this.locations.forEach(loc => {
                     const distance = Math.sqrt((x - (loc.x + 40))**2 + (y - (loc.y + 40))**2);
@@ -563,7 +564,7 @@ const game = new NeonRPG();
 
 // Handle window resize
 window.addEventListener('resize', () => {
-    game.canvas.width = game.canvas.offsetWidth;
-    game.canvas.height = game.canvas.offsetHeight;
+    game.canvas.width = 620;
+    game.canvas.height = 440;
     game.drawWorld();
 });

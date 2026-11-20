@@ -1,228 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>The Deletion Game - Enhanced</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Orbitron', monospace;
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
-            color: #fff;
-            overflow: hidden;
-            height: 100vh;
-        }
-        
-        .game-container {
-            display: flex;
-            height: 100vh;
-            position: relative;
-        }
-        
-        .sidebar {
-            width: 300px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            border-right: 2px solid #00ff88;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .logo {
-            text-align: center;
-            font-size: 24px;
-            font-weight: 900;
-            color: #00ff88;
-            text-shadow: 0 0 20px #00ff88;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            font-size: 12px;
-            color: #ff4757;
-            margin-bottom: 20px;
-        }
-        
-        .stats {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .stat-value {
-            color: #00ff88;
-            font-weight: bold;
-        }
-        
-        .controls {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .control-btn {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #ff4757, #ff3742);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
-        }
-        
-        .control-btn.reset {
-            background: linear-gradient(45deg, #00ff88, #00e676);
-        }
-        
-        .control-btn.reset:hover {
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
-        }
-        
-        .instructions {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-        
-        .key {
-            background: #333;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-            color: #00ff88;
-        }
-        
-        .game-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        canvas {
-            border: 2px solid #00ff88;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
-            background: #0a0a0a;
-        }
-        
-        .status-overlay {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            padding: 15px 30px;
-            border-radius: 25px;
-            border: 1px solid #00ff88;
-            font-weight: bold;
-            text-align: center;
-            min-width: 300px;
-        }
-        
-        .status-overlay.win {
-            border-color: #00ff88;
-            color: #00ff88;
-            text-shadow: 0 0 10px #00ff88;
-        }
-        
-        .status-overlay.lose {
-            border-color: #ff4757;
-            color: #ff4757;
-            text-shadow: 0 0 10px #ff4757;
-        }
-        
-        @keyframes glow {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        .glow {
-            animation: glow 2s ease-in-out infinite;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Deletion Game | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.status-overlay { justify-self: stretch; margin-bottom: 10px; padding: 9px 14px; border-radius: 8px; background: #1A2029; color: #D8DEE8; font-weight: 600; font-size: 15px; text-align: center; }
+.status-overlay.win { background: var(--good); color: #fff; }
+.status-overlay.lose { background: var(--bad); color: #fff; }
+.screen { align-content: start; }
+</style>
 </head>
-<body>
-    <div class="game-container">
-        <div class="sidebar">
-            <div class="logo glow">DELETION</div>
-            <div class="subtitle">Every Step Matters</div>
-            
-            <div class="stats">
-                <div class="stat-item">
-                    <span>Steps Taken:</span>
-                    <span class="stat-value" id="stepCount">0</span>
-                </div>
-                <div class="stat-item">
-                    <span>Tiles Deleted:</span>
-                    <span class="stat-value" id="deletedCount">0</span>
-                </div>
-                <div class="stat-item">
-                    <span>Distance to Exit:</span>
-                    <span class="stat-value" id="distanceToExit">--</span>
-                </div>
-                <div class="stat-item">
-                    <span>Survival Rate:</span>
-                    <span class="stat-value" id="survivalRate">100%</span>
-                </div>
-            </div>
-            
-            <div class="controls">
-                <button class="control-btn reset" id="newGame">New Game</button>
-                <button class="control-btn" id="undoMove">Undo Last Move</button>
-                <button class="control-btn" id="hintBtn">Show Hint</button>
-            </div>
-            
-            <div class="instructions">
-                <p><strong>CONTROLS:</strong></p>
-                <p><span class="key">WASD</span> or <span class="key">Arrow Keys</span> to move</p>
-                <p><span class="key">R</span> to restart level</p>
-                <p><span class="key">H</span> for hint</p>
-                <br>
-                <p><strong>OBJECTIVE:</strong></p>
-                <p>Reach the <span style="color: #00ff88;">EXIT</span> without deleting your path there. Every step permanently destroys the ground behind you!</p>
-            </div>
-        </div>
-        
-        <div class="game-area">
-            <div class="status-overlay" id="statusOverlay">
-                Navigate carefully - there's no going back!
-            </div>
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
-        </div>
+<body data-game="deletion" data-pad="arrows h:Hint r:Restart">
+
+<main class="console">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Steps</span><span class="read__value" id="stepCount">0</span></div>
+    <div class="read "><span class="read__label">Tiles deleted</span><span class="read__value" id="deletedCount">0</span></div>
+    <div class="read "><span class="read__label">Distance to exit</span><span class="read__value" id="distanceToExit">--</span></div>
+    <div class="read lcd__push"><span class="read__label">Survival rate</span><span class="read__value" id="survivalRate">100%</span></div>
+  </div>
+  <div class="deck">
+    <div class="screen">
+      <div class="status-overlay" id="statusOverlay" role="status">Navigate carefully. There is no going back.</div>
+      <canvas id="gameCanvas" width="800" height="600" aria-label="Deletion Game board"></canvas>
     </div>
-    
-    <script src="game.js"></script>
+    <aside class="panel">
+      <div class="btns">
+        <button class="btn btn--primary" type="button" id="newGame">New game</button>
+        <button class="btn" type="button" id="undoMove">Undo last move</button>
+        <button class="btn" type="button" id="hintBtn">Show a hint</button>
+      </div>
+      <div class="plate"><h2>The one rule</h2><p>Every step permanently deletes the tile you just left. Reach the green exit before you cut off your own route.</p></div>
+    </aside>
+  </div>
+  <div class="legend">
+    <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to move</span>
+    <span><kbd>H</kbd> hint</span>
+    <span><kbd>R</kbd> restart level</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>You are the red tile. The exit is the green one.</li>
+  <li>Each time you move, the tile you left is deleted for good. You cannot walk back over it.</li>
+  <li>Black tiles are obstacles. Walking into one ends the attempt.</li>
+  <li>Plan the whole route first. Undo takes back one move, and a hint shows a safe direction.</li>
+</ul>
+<p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows move &nbsp; <kbd>H</kbd> hint &nbsp; <kbd>R</kbd> restart</p>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="game.js"></script>
 </body>
 </html>

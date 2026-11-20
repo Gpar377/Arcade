@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five Letters | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.stage5 { display: grid; gap: 16px; justify-items: center; width: 100%; padding: 6px 0; }
+.rows { display: grid; gap: 7px; }
+.wrow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+.wrow.is-shake { animation: shake .4s; }
+@keyframes shake { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+.tile {
+  width: clamp(40px, min(13vw, 6.3vh), 60px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 8px;
+  font: 800 clamp(24px, 4.2vh, 34px)/1 var(--display); text-transform: uppercase; color: #fff;
+  box-shadow: inset 0 0 0 2px #2F3744;
+}
+.tile.is-filled { box-shadow: inset 0 0 0 2px #7A8496; }
+.tile.is-pop { animation: pop .1s; }
+@keyframes pop { 50% { transform: scale(1.08); } }
+.tile.is-flip { transform: rotateX(90deg); transition: transform .16s ease-in; }
+.tile.is-flip-in { animation: flipin .16s ease-out; }
+@keyframes flipin { from { transform: rotateX(90deg); } }
+.tile.is-correct { background: var(--c-ok); box-shadow: none; color: var(--c-ok-ink); }
+.tile.is-present { background: var(--c-near); box-shadow: none; color: var(--c-near-ink); }
+.tile.is-absent { background: #3A4352; box-shadow: none; }
+body { --c-ok: #1E9E5A; --c-ok-ink: #fff; --c-near: #E9A50F; --c-near-ink: #1A1200; }
+body.cb { --c-ok: #F5793A; --c-ok-ink: #1A0A00; --c-near: #85C0F9; --c-near-ink: #001A33; }
+.msg { min-height: 1.5em; color: #B9C0CC; font-size: 15px; text-align: center; }
+.keys5 { display: grid; gap: 8px; max-width: 620px; width: 100%; margin: 0 auto; }
+.krow { display: flex; gap: 6px; justify-content: center; }
+.key { flex: 1 1 0; max-width: 50px; padding: 12px 0 13px; font-size: 16px; font-weight: 800; }
+.key--wide { max-width: 78px; flex-grow: 1.6; font-size: 14px; }
+.key.is-correct { background: var(--c-ok); color: var(--c-ok-ink); box-shadow: 0 2px 0 rgba(0, 0, 0, .3); }
+.key.is-present { background: var(--c-near); color: var(--c-near-ink); box-shadow: 0 2px 0 rgba(0, 0, 0, .3); }
+.key.is-absent { background: rgba(0, 0, 0, .28); color: var(--on-plastic); box-shadow: none; opacity: .55; }
+.modes { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: min(380px, 80vw); margin-top: 6px; }
+.stats div { display: grid; }
+.stats b { font: 700 28px var(--dots); color: #fff; }
+.stats span { font-size: 12px; color: #B9C0CC; }
+.dist { display: grid; gap: 4px; width: min(340px, 78vw); margin: 8px 0; }
+.dbar { display: grid; grid-template-columns: 16px 1fr; gap: 8px; align-items: center; font-size: 13px; color: #B9C0CC; text-align: left; }
+.dbar i { display: block; font-style: normal; background: #3A4352; color: #fff; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-align: right; }
+.dbar.is-now i { background: var(--c-ok); }
+@media (max-width: 560px) { .key { padding: 15px 0 16px; font-size: 15px; } .krow { gap: 4px; } .keys5 { gap: 6px; } }
+</style>
+</head>
+<body data-game="fiveletters">
+
+<main class="console console--narrow" style="max-width:680px">
+  <div class="lcd">
+    <div class="read read--text"><span class="read__label">Game</span><span class="read__value" id="modeLabel">Daily</span></div>
+    <div class="read lcd__push"><span class="read__label">Tries</span><span class="read__value" id="tries">0/6</span></div>
+  </div>
+  <div class="modes">
+    <div class="btns btns--wrap" role="group" aria-label="Mode">
+      <button class="btn" type="button" data-mode="daily">Daily word</button>
+      <button class="btn" type="button" data-mode="practice">Practice</button>
+    </div>
+    <button class="btn btn--quiet" type="button" id="cbBtn" aria-pressed="false">Colour-blind colours</button>
+  </div>
+  <div class="screen">
+    <div class="stage5">
+      <div class="rows" id="rows" aria-label="Guesses"></div>
+      <p class="msg" id="msg" aria-live="polite"></p>
+    </div>
+    <div class="overlay" id="result">
+      <div class="overlay__in">
+        <h2 id="resultTitle">Solved</h2>
+        <p id="resultWord"></p>
+        <div class="stats">
+          <div><b id="stPlayed">0</b><span>Played</span></div>
+          <div><b id="stWin">0%</b><span>Won</span></div>
+          <div><b id="stStreak">0</b><span>Daily streak</span></div>
+          <div><b id="stMax">0</b><span>Best streak</span></div>
+        </div>
+        <div class="dist" id="dist" aria-label="Guesses needed in past wins"></div>
+        <div class="btns">
+          <button class="btn" type="button" id="nextBtn">Next word</button>
+          <button class="btn" type="button" id="shareBtn">Copy result</button>
+          <button class="btn btn--quiet" type="button" id="closeBtn" style="color:#fff">Look at the board</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="keys5" id="keys" aria-label="Keyboard"></div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Guess the hidden five-letter word. You have six tries, and each guess must be a real word.</li>
+  <li>After each guess the tiles change colour. <b>Green</b>: right letter, right spot. <b>Amber</b>: in the word, wrong spot. <b>Grey</b>: not in the word.</li>
+  <li>A letter that appears twice in your guess but once in the answer only lights up once.</li>
+  <li>The daily word is the same for everyone and changes at midnight. Practice gives you a fresh word whenever you want one.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="words.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

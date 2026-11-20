@@ -1,128 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>War Commander</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: #ecf0f1;
-            height: 100vh;
-            overflow: hidden;
-        }
-        
-        .game-container {
-            display: flex;
-            height: 100vh;
-        }
-        
-        .sidebar {
-            width: 250px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-right: 2px solid #e74c3c;
-        }
-        
-        .game-area {
-            flex: 1;
-            position: relative;
-        }
-        
-        canvas {
-            background: #1a252f;
-            cursor: crosshair;
-        }
-        
-        .unit-info {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .unit-btn {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .unit-btn:hover {
-            background: linear-gradient(45deg, #c0392b, #a93226);
-        }
-        
-        .unit-btn.selected {
-            background: linear-gradient(45deg, #27ae60, #229954);
-        }
-        
-        .stats {
-            font-size: 12px;
-            margin-top: 20px;
-        }
-        
-        .turn-indicator {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-        
-        .player1 { color: #3498db; }
-        .player2 { color: #e74c3c; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>War Commander | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.screen canvas { cursor: crosshair; }
+.player1, .player2 { display: inline-flex; align-items: center; gap: 8px; }
+.player1::before, .player2::before { content: ''; width: .6em; height: .6em; border-radius: 3px; background: #2477C9; }
+.player2::before { background: #D8362C; }
+.unit-btn { display: flex; justify-content: space-between; gap: 10px; text-align: left; }
+.unit-btn small { font: 700 15px var(--dots); opacity: .7; }
+.side h2 { font-size: 14px; font-weight: 700; padding: 4px 2px 0; }
+</style>
 </head>
-<body>
-    <div class="game-container">
-        <div class="sidebar">
-            <div class="unit-info">
-                <h3>🎖️ WAR COMMANDER</h3>
-                <p>Turn-based strategy warfare</p>
-            </div>
-            
-            <div class="unit-info">
-                <h4>Deploy Units:</h4>
-                <button class="unit-btn" id="soldierBtn">👤 Soldier (HP:3, ATK:2)</button>
-                <button class="unit-btn" id="tankBtn">🚗 Tank (HP:5, ATK:4)</button>
-                <button class="unit-btn" id="aircraftBtn">✈️ Aircraft (HP:2, ATK:5)</button>
-            </div>
-            
-            <div class="unit-info">
-                <h4>Actions:</h4>
-                <button class="unit-btn" id="moveBtn">🚶 Move Unit</button>
-                <button class="unit-btn" id="attackBtn">⚔️ Attack</button>
-                <button class="unit-btn" id="endTurnBtn">⏭️ End Turn</button>
-            </div>
-            
-            <div class="stats">
-                <h4>Player 1 (Blue):</h4>
-                <p>Units: <span id="p1Units">0</span></p>
-                <p>Resources: <span id="p1Resources">100</span></p>
-                
-                <h4>Player 2 (Red):</h4>
-                <p>Units: <span id="p2Units">0</span></p>
-                <p>Resources: <span id="p2Resources">100</span></p>
-            </div>
-        </div>
-        
-        <div class="game-area">
-            <div class="turn-indicator" id="turnIndicator">
-                <span class="player1">Player 1's Turn</span>
-            </div>
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
-        </div>
-    </div>
-    
-    <script src="war.js"></script>
+<body data-game="war">
+
+<main class="console">
+  <div class="lcd">
+    <div class="read read--text"><span class="read__label">Turn</span><span class="read__value" id="turnIndicator"><span class="player1">Blue</span></span></div>
+    <div class="read lcd__push"><span class="read__label">Blue units</span><span class="read__value" id="p1Units">0</span></div>
+    <div class="read "><span class="read__label">Blue resources</span><span class="read__value" id="p1Resources">100</span></div>
+    <div class="read "><span class="read__label">Red units</span><span class="read__value" id="p2Units">0</span></div>
+    <div class="read "><span class="read__label">Red resources</span><span class="read__value" id="p2Resources">100</span></div>
+  </div>
+  <div class="deck">
+    <div class="screen"><canvas id="gameCanvas" width="800" height="600" aria-label="Battlefield grid"></canvas></div>
+    <aside class="panel side">
+      <h2>Deploy a unit</h2>
+      <div class="btns">
+        <button class="btn unit-btn" type="button" id="soldierBtn">Soldier <small>20</small></button>
+        <button class="btn unit-btn" type="button" id="tankBtn">Tank <small>50</small></button>
+        <button class="btn unit-btn" type="button" id="aircraftBtn">Aircraft <small>40</small></button>
+      </div>
+      <h2>Give an order</h2>
+      <div class="btns">
+        <button class="btn unit-btn" type="button" id="moveBtn">Move a unit</button>
+        <button class="btn unit-btn" type="button" id="attackBtn">Attack</button>
+        <button class="btn btn--primary" type="button" id="endTurnBtn">End turn</button>
+      </div>
+      <div class="plate"><h2>Unit strengths</h2>
+        <div class="row"><span>Soldier</span><span>3 health, 2 attack</span></div>
+        <div class="row"><span>Tank</span><span>5 health, 4 attack</span></div>
+        <div class="row"><span>Aircraft</span><span>2 health, 5 attack</span></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Two players share the screen. Blue deploys in the bottom three rows, Red in the top three.</li>
+  <li>Choose a unit, then select a square in your zone to deploy it. Units cost resources.</li>
+  <li>To move or attack, choose the order, select your unit, then select the target square.</li>
+  <li>Ending your turn earns 20 resources and hands over to the other player.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="war.js"></script>
 </body>
 </html>

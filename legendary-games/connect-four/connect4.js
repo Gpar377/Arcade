@@ -162,15 +162,15 @@ class ConnectFour {
         this.updateUI();
         this.renderBoard(); // Show winning animation
         
-        document.getElementById('gameResult').textContent = `${winner} Wins!`;
-        document.getElementById('gameMessage').textContent = 'Congratulations on the victory!';
+        document.getElementById('gameResult').textContent = `${winner} wins`;
+        document.getElementById('gameMessage').textContent = 'Four in a row.';
         document.getElementById('gameOver').style.display = 'block';
     }
     
     handleDraw() {
         this.gameOver = true;
-        document.getElementById('gameResult').textContent = 'Draw!';
-        document.getElementById('gameMessage').textContent = 'The board is full. Good game!';
+        document.getElementById('gameResult').textContent = 'Draw';
+        document.getElementById('gameMessage').textContent = 'The board is full.';
         document.getElementById('gameOver').style.display = 'block';
     }
     
@@ -254,7 +254,7 @@ class ConnectFour {
     
     toggleAI() {
         this.aiEnabled = !this.aiEnabled;
-        alert(`AI ${this.aiEnabled ? 'enabled' : 'disabled'}`);
+        alert(this.aiEnabled ? 'The computer now plays Yellow.' : 'Computer opponent off. Two players.');
     }
     
     resetScore() {

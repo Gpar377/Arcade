@@ -1,217 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Chess Master</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #8B4513, #D2691E);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #2F1B14;
-        }
-        
-        .game-container {
-            display: flex;
-            gap: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .board-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .chess-board {
-            display: grid;
-            grid-template-columns: repeat(8, 60px);
-            grid-template-rows: repeat(8, 60px);
-            border: 4px solid #8B4513;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .square {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-        
-        .square.light { background: #F0D9B5; }
-        .square.dark { background: #B58863; }
-        
-        .square:hover {
-            box-shadow: inset 0 0 0 3px #FFD700;
-        }
-        
-        .square.selected {
-            background: #FFD700 !important;
-            box-shadow: inset 0 0 0 3px #FF6347;
-        }
-        
-        .square.possible-move {
-            background: #90EE90 !important;
-        }
-        
-        .square.capture {
-            background: #FFB6C1 !important;
-        }
-        
-        .coordinates {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #8B4513;
-        }
-        
-        .sidebar {
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .game-info {
-            background: #F5F5DC;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #8B4513;
-        }
-        
-        .current-player {
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        .player.white { color: #000; }
-        .player.black { color: #8B4513; }
-        
-        .captured {
-            margin-top: 15px;
-        }
-        
-        .captured h4 {
-            margin-bottom: 10px;
-            color: #8B4513;
-        }
-        
-        .captured-pieces {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            min-height: 40px;
-            background: #FFF;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #DDD;
-        }
-        
-        .controls {
-            background: #F5F5DC;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #8B4513;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 12px;
-            margin: 5px 0;
-            background: #8B4513;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        
-        .btn:hover {
-            background: #A0522D;
-        }
-        
-        .game-over {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            display: none;
-            z-index: 1000;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chess | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.chess-board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: min(100%, 64vh, 620px); aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
+.square { position: relative; min-width: 0; min-height: 0; display: grid; place-items: center; cursor: pointer; font-size: clamp(26px, 6.4vh, 54px); line-height: 1; user-select: none; -webkit-user-select: none; }
+@media (max-width: 700px) { .square { font-size: clamp(22px, 9vw, 54px); } }
+.square.light { background: #EBDCC3; }
+.square.dark { background: #A9764A; }
+.square[data-piece="white"] { color: #fff; text-shadow: 0 0 1px #000, 0 1px 0 #000, 1px 0 0 #000, -1px 0 0 #000, 0 -1px 0 #000, 0 3px 0 rgba(0, 0, 0, .25); }
+.square[data-piece="black"] { color: #14161B; text-shadow: 0 2px 0 rgba(255, 255, 255, .25); }
+.square::before, .square::after { position: absolute; font: 700 11px/1 var(--display); color: rgba(20, 22, 27, .6); text-shadow: none; }
+.square::before { top: 4px; left: 4px; }
+.square::after { bottom: 3px; right: 5px; }
+.chess-board .square:nth-child(1)::before { content: "8"; }
+.chess-board .square:nth-child(9)::before { content: "7"; }
+.chess-board .square:nth-child(17)::before { content: "6"; }
+.chess-board .square:nth-child(25)::before { content: "5"; }
+.chess-board .square:nth-child(33)::before { content: "4"; }
+.chess-board .square:nth-child(41)::before { content: "3"; }
+.chess-board .square:nth-child(49)::before { content: "2"; }
+.chess-board .square:nth-child(57)::before { content: "1"; }
+.chess-board .square:nth-child(57)::after { content: "a"; }
+.chess-board .square:nth-child(58)::after { content: "b"; }
+.chess-board .square:nth-child(59)::after { content: "c"; }
+.chess-board .square:nth-child(60)::after { content: "d"; }
+.chess-board .square:nth-child(61)::after { content: "e"; }
+.chess-board .square:nth-child(62)::after { content: "f"; }
+.chess-board .square:nth-child(63)::after { content: "g"; }
+.chess-board .square:nth-child(64)::after { content: "h"; }
+
+.square.selected { box-shadow: inset 0 0 0 5px var(--focus); }
+.square.possible-move { background-image: radial-gradient(circle, rgba(20, 22, 27, .45) 17%, transparent 19%); }
+.square.capture { box-shadow: inset 0 0 0 5px var(--bad); }
+.player { font-weight: 800; font-size: 26px; font-stretch: 85%; display: flex; align-items: center; gap: 10px; }
+.player::before { content: ''; width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ink); }
+.player.black::before { background: var(--ink); }
+.captured-pieces { min-height: 30px; font-size: 24px; line-height: 1.2; letter-spacing: 1px; }
+.cap.white { color: #fff; text-shadow: 0 0 1px #000, 0 1px 0 #000, 1px 0 0 #000, -1px 0 0 #000, 0 -1px 0 #000; }
+</style>
 </head>
-<body>
-    <div class="game-container">
-        <div class="board-container">
-            <div class="chess-board" id="chessBoard"></div>
-            <div class="coordinates">
-                <span>a b c d e f g h</span>
-            </div>
+<body data-game="chess">
+
+<main class="console console--mid">
+  <div class="deck">
+    <div class="screen">
+      <div class="chess-board" id="chessBoard" aria-label="Chess board"></div>
+      <div class="overlay" id="gameOver">
+        <div class="overlay__in">
+          <h2 id="gameResult">Game over</h2>
+          <p id="gameMessage">Checkmate.</p>
+          <div class="btns"><button class="btn" type="button" onclick="game.newGame(); document.getElementById('gameOver').style.display='none';">Play again</button></div>
         </div>
-        
-        <div class="sidebar">
-            <div class="game-info">
-                <div class="current-player">
-                    Current Player: <span class="player white" id="currentPlayer">White</span>
-                </div>
-                
-                <div class="captured">
-                    <h4>White Captured:</h4>
-                    <div class="captured-pieces" id="whiteCaptured"></div>
-                </div>
-                
-                <div class="captured">
-                    <h4>Black Captured:</h4>
-                    <div class="captured-pieces" id="blackCaptured"></div>
-                </div>
-            </div>
-            
-            <div class="controls">
-                <h3>Game Controls</h3>
-                <button class="btn" onclick="game.newGame()">New Game</button>
-                <button class="btn" onclick="game.undoMove()">Undo Move</button>
-                <button class="btn" onclick="game.toggleAI()">Toggle AI</button>
-                
-                <div style="margin-top: 20px; font-size: 14px;">
-                    <p><strong>How to Play:</strong></p>
-                    <p>• Click a piece to select it</p>
-                    <p>• Click a highlighted square to move</p>
-                    <p>• Green = possible moves</p>
-                    <p>• Pink = capture moves</p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    
-    <div class="game-over" id="gameOver">
-        <h2 id="gameResult">Game Over</h2>
-        <p id="gameMessage">Checkmate!</p>
-        <button class="btn" onclick="game.newGame(); document.getElementById('gameOver').style.display='none';">Play Again</button>
-    </div>
-    
-    <script src="chess.js"></script>
+    <aside class="panel">
+      <div class="plate"><h2>To move</h2><span class="player white" id="currentPlayer">White</span></div>
+      <div class="plate"><h2>Taken by White</h2><div class="captured-pieces" id="whiteCaptured"></div></div>
+      <div class="plate"><h2>Taken by Black</h2><div class="captured-pieces" id="blackCaptured"></div></div>
+      <div class="btns">
+        <button class="btn btn--primary" type="button" onclick="game.newGame()">New game</button>
+        <button class="btn" type="button" onclick="game.undoMove()">Undo move</button>
+        <button class="btn" type="button" aria-pressed="false" onclick="game.toggleAI(); this.setAttribute('aria-pressed', game.aiEnabled)">Play against the computer</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Select one of your pieces. Squares it can move to show a dot; pieces it can take show a red frame.</li>
+  <li>Select a marked square to move there. White goes first.</li>
+  <li>Undo takes back the last move. Switch on the computer to play Black against it.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="chess.js"></script>
 </body>
 </html>
