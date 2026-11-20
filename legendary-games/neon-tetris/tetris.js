@@ -159,6 +159,7 @@ class NeonTetris {
             this.score += 2;
         }
         this.lockPiece();
+        this.updateUI(); // show drop points straight away
     }
     
     checkCollision(x, y, shape) {
