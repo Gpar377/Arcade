@@ -34,8 +34,9 @@ class WarCommander {
     
     handleCanvasClick(e) {
         const rect = this.canvas.getBoundingClientRect();
-        const x = Math.floor((e.clientX - rect.left) / this.gridSize);
-        const y = Math.floor((e.clientY - rect.top) / this.gridSize);
+        // the canvas is scaled to fit the screen, so convert from CSS pixels to canvas pixels
+        const x = Math.floor((e.clientX - rect.left) * (this.canvas.width / rect.width) / this.gridSize);
+        const y = Math.floor((e.clientY - rect.top) * (this.canvas.height / rect.height) / this.gridSize);
         
         if (this.selectedAction === 'deploy') {
             this.deployUnit(x, y);
