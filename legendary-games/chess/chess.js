@@ -99,8 +99,9 @@ class Chess {
     }
     
     selectSquare(row, col) {
-        this.selectedSquare = [row, col];
+        // highlightMoves() clears the old selection first, so record the new one afterwards
         this.highlightMoves(row, col);
+        this.selectedSquare = [row, col];
     }
     
     clearSelection() {
