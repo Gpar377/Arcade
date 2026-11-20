@@ -570,7 +570,7 @@ class CyberDungeon {
             Object.entries(skills).forEach(([skillName, level]) => {
                 const skillNode = document.createElement('div');
                 skillNode.className = 'skill-node' + (level > 0 ? ' learned' : '');
-                skillNode.textContent = skillName.substring(0, 6);
+                skillNode.textContent = skillName.replace(/([a-z])([A-Z])/g, '$1 $2');
                 skillNode.title = `${skillName} (Level ${level})`;
                 skillNode.onclick = () => this.learnSkill(category, skillName);
                 skillTree.appendChild(skillNode);
