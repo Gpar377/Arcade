@@ -75,6 +75,15 @@ class CyberDungeon {
         // Ensure connectivity
         this.ensureConnectivity();
 
+        // Rarely the random cave comes out tiny, leaving no room to explore or for the stairs.
+        // Roll a new one when that happens (bounded, so this can never loop forever).
+        this._caveAttempts = (this._caveAttempts || 0) + 1;
+        if (this.getFloorTiles().length < 60 && this._caveAttempts < 25) {
+            this.generateDungeon();
+            return;
+        }
+        this._caveAttempts = 0;
+
         // Place player
         this.placePlayer();
 
