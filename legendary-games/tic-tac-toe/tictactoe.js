@@ -96,8 +96,8 @@ class TicTacToe {
         this.updateUI();
         this.renderBoard();
         
-        document.getElementById('gameResult').textContent = `${winner} Wins!`;
-        document.getElementById('gameMessage').textContent = `Player ${winner} is victorious!`;
+        document.getElementById('gameResult').textContent = `${winner} wins`;
+        document.getElementById('gameMessage').textContent = 'Three in a row.';
         document.getElementById('gameOver').style.display = 'block';
     }
     
@@ -107,8 +107,8 @@ class TicTacToe {
         this.saveScores();
         this.updateUI();
         
-        document.getElementById('gameResult').textContent = 'Draw!';
-        document.getElementById('gameMessage').textContent = 'It\'s a tie! Well played!';
+        document.getElementById('gameResult').textContent = 'Draw';
+        document.getElementById('gameMessage').textContent = 'Nobody got three in a row.';
         document.getElementById('gameOver').style.display = 'block';
     }
     
@@ -211,7 +211,7 @@ class TicTacToe {
     
     toggleAI() {
         this.aiEnabled = !this.aiEnabled;
-        alert(`AI ${this.aiEnabled ? 'enabled' : 'disabled'}`);
+        alert(this.aiEnabled ? 'The computer now plays O.' : 'Computer opponent off. Two players.');
         if (!this.aiEnabled) {
             this.newGame();
         }
