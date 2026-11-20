@@ -367,5 +367,5 @@ class UnoGame {
 
 // Initialize game
 window.addEventListener('load', () => {
-    new UnoGame();
+    window.game = new UnoGame();
 });

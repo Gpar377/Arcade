@@ -281,5 +281,5 @@ class WarCommander {
 }
 
 window.addEventListener('load', () => {
-    new WarCommander();
+    window.game = new WarCommander();
 });

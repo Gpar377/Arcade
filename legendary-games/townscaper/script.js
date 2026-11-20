@@ -360,5 +360,5 @@ class Townscaper {
 
 // Initialize the game when page loads
 window.addEventListener('load', () => {
-    new Townscaper();
+    window.game = new Townscaper();
 });

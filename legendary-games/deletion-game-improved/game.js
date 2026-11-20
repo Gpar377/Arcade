@@ -407,5 +407,5 @@ class EnhancedDeletionGame {
 
 // Initialize game
 window.addEventListener('load', () => {
-    new EnhancedDeletionGame();
+    window.game = new EnhancedDeletionGame();
 });
