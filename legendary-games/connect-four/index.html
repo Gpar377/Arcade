@@ -1,227 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Connect Four</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #2C3E50;
-        }
-        
-        .game-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-        
-        .game-title {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #E74C3C;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #F8F9FA;
-            border-radius: 10px;
-            border: 2px solid #E9ECEF;
-        }
-        
-        .current-player {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        
-        .player-red { color: #E74C3C; }
-        .player-yellow { color: #F39C12; }
-        
-        .score {
-            display: flex;
-            gap: 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        
-        .board {
-            display: inline-block;
-            background: #3498DB;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(7, 60px);
-            grid-template-rows: repeat(6, 60px);
-            gap: 8px;
-        }
-        
-        .cell {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .cell:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .cell.red {
-            background: linear-gradient(135deg, #E74C3C, #C0392B);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .cell.yellow {
-            background: linear-gradient(135deg, #F39C12, #E67E22);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .cell.winning {
-            animation: pulse 1s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background: #3498DB;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #2980B9;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: #95A5A6;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #7F8C8D;
-            transform: translateY(-2px);
-        }
-        
-        .game-over {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            display: none;
-            z-index: 1000;
-        }
-        
-        .game-over h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-        
-        .column-indicator {
-            display: grid;
-            grid-template-columns: repeat(7, 60px);
-            gap: 8px;
-            margin-bottom: 10px;
-            padding: 0 20px;
-        }
-        
-        .column-hover {
-            height: 20px;
-            border-radius: 10px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .column-hover.active {
-            opacity: 0.7;
-        }
-        
-        .column-hover.red { background: #E74C3C; }
-        .column-hover.yellow { background: #F39C12; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connect Four | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.c4 { width: min(100%, 78vh, 600px); }
+.column-indicator, .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2.2%; padding: 0 3%; }
+.column-indicator { margin-bottom: 8px; }
+.column-hover { aspect-ratio: 1; border-radius: 50%; opacity: 0; cursor: pointer; transform: scale(.82); }
+.column-hover.active { opacity: 1; }
+.grid { background: #2F6FDB; padding: 3%; border-radius: 16px; box-shadow: inset 0 3px 0 rgba(255, 255, 255, .3), inset 0 -6px 0 rgba(0, 0, 0, .2); }
+.cell { aspect-ratio: 1; border-radius: 50%; background: var(--screen); cursor: pointer; box-shadow: inset 0 4px 0 rgba(0, 0, 0, .45); }
+.red { background: #F0554B; }
+.yellow { background: #FFC629; }
+.cell.red, .cell.yellow { box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .2), inset 0 3px 0 rgba(255, 255, 255, .35); animation: drop .28s cubic-bezier(.3, 1.3, .6, 1); }
+.cell.winning { outline: 4px solid #fff; outline-offset: -4px; animation: none; }
+@keyframes drop { from { transform: translateY(-140%); } }
+.player-red::before, .player-yellow::before { content: ''; display: inline-block; width: .62em; height: .62em; border-radius: 50%; margin-right: 8px; background: #D8362C; }
+.player-yellow::before { background: #E3A900; box-shadow: inset 0 0 0 2px var(--lcd-ink); }
+</style>
 </head>
-<body>
-    <div class="game-container">
-        <h1 class="game-title">🔴 CONNECT FOUR 🟡</h1>
-        
-        <div class="game-info">
-            <div class="current-player">
-                Current Player: <span id="currentPlayer" class="player-red">Red</span>
-            </div>
-            <div class="score">
-                <div>Red: <span id="redScore">0</span></div>
-                <div>Yellow: <span id="yellowScore">0</span></div>
-            </div>
-        </div>
-        
-        <div class="board">
-            <div class="column-indicator" id="columnIndicator"></div>
-            <div class="grid" id="gameGrid"></div>
-        </div>
-        
-        <div class="controls">
-            <button class="btn btn-primary" onclick="game.newGame()">New Game</button>
-            <button class="btn btn-secondary" onclick="game.toggleAI()">Toggle AI</button>
-            <button class="btn btn-secondary" onclick="game.resetScore()">Reset Score</button>
-        </div>
+<body data-game="connect4">
+
+<main class="console console--narrow">
+  <div class="lcd">
+    <div class="read"><span class="read__label">Turn</span><span class="read__value"><span id="currentPlayer" class="player-red">Red</span></span></div>
+    <div class="read lcd__push"><span class="read__label">Red wins</span><span class="read__value" id="redScore">0</span></div>
+    <div class="read "><span class="read__label">Yellow wins</span><span class="read__value" id="yellowScore">0</span></div>
+  </div>
+  <div class="screen">
+    <div class="c4">
+      <div class="column-indicator" id="columnIndicator"></div>
+      <div class="grid" id="gameGrid" aria-label="Connect Four board"></div>
     </div>
-    
-    <div class="game-over" id="gameOver">
-        <h2 id="gameResult">Game Over</h2>
-        <p id="gameMessage">Congratulations!</p>
-        <button class="btn btn-primary" onclick="game.newGame(); document.getElementById('gameOver').style.display='none';">Play Again</button>
+    <div class="overlay" id="gameOver">
+      <div class="overlay__in">
+        <h2 id="gameResult">Game over</h2>
+        <p id="gameMessage"></p>
+        <div class="btns"><button class="btn" type="button" onclick="game.newGame(); document.getElementById('gameOver').style.display='none';">Play again</button></div>
+      </div>
     </div>
-    
-    <script src="connect4.js"></script>
+  </div>
+  <div class="btns btns--wrap">
+    <button class="btn btn--primary" type="button" onclick="game.newGame()">New game</button>
+    <button class="btn" type="button" aria-pressed="false" onclick="game.toggleAI(); this.setAttribute('aria-pressed', game.aiEnabled)">Play against the computer</button>
+    <button class="btn btn--danger" type="button" onclick="game.resetScore()">Reset score</button>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Take turns dropping a disc into any column. It falls to the lowest free slot.</li>
+  <li>First to line up four of their colour wins: across, down or diagonally.</li>
+  <li>Play a friend on the same screen, or switch on the computer to play Yellow.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="connect4.js"></script>
 </body>
 </html>
