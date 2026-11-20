@@ -77,7 +77,8 @@ class Chess {
                 return;
             }
             
-            if (this.isValidMove(selectedRow, selectedCol, row, col)) {
+            // only allow moves the selected piece can actually make
+            if (this.getPossibleMoves(selectedRow, selectedCol).some(([r, c]) => r === row && c === col)) {
                 this.makeMove(selectedRow, selectedCol, row, col);
                 this.clearSelection();
                 this.switchPlayer();
