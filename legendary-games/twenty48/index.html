@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2048 | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.board { --gap: clamp(8px, 1.6vw, 12px); position: relative; width: min(100%, 58vh, 480px); aspect-ratio: 1; background: #1B212B; border-radius: 14px; touch-action: none; user-select: none; -webkit-user-select: none; }
+.bg, .tile {
+  position: absolute; left: var(--gap); top: var(--gap);
+  width: calc((100% - 5 * var(--gap)) / 4); height: calc((100% - 5 * var(--gap)) / 4);
+  transform: translate(calc(var(--c) * (100% + var(--gap))), calc(var(--r) * (100% + var(--gap))));
+  border-radius: 10px;
+}
+.bg { background: #262E3A; box-shadow: inset 0 3px 0 rgba(0, 0, 0, .3); }
+.tile {
+  display: grid; place-items: center; font: 800 clamp(26px, 6.4vh, 52px)/1 var(--display); font-stretch: 80%;
+  transition: transform .12s ease-in-out; box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .18);
+  background: #EEF1F5; color: #14161B;
+}
+.tile.is-long { font-size: clamp(20px, 4.8vh, 40px); }
+.tile.is-new { animation: appear .18s .1s ease-out backwards; }
+.tile.is-merged { animation: merge .2s ease-out; }
+@keyframes appear { from { transform: translate(calc(var(--c) * (100% + var(--gap))), calc(var(--r) * (100% + var(--gap)))) scale(.2); opacity: 0; } }
+@keyframes merge { 50% { transform: translate(calc(var(--c) * (100% + var(--gap))), calc(var(--r) * (100% + var(--gap)))) scale(1.14); } }
+.tile[data-v="4"] { background: #D6DEE8; }
+.tile[data-v="8"] { background: #FFD58A; }
+.tile[data-v="16"] { background: #FFB648; }
+.tile[data-v="32"] { background: #FF8A3D; }
+.tile[data-v="64"] { background: #F0554B; color: #fff; }
+.tile[data-v="128"] { background: #8BC84A; }
+.tile[data-v="256"] { background: #1FB3A4; color: #fff; }
+.tile[data-v="512"] { background: #4BA3F5; color: #fff; }
+.tile[data-v="1024"] { background: #6A4DE3; color: #fff; }
+.tile[data-v="2048"] { background: #FFC629; box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .18), 0 0 0 3px #fff; }
+.tile[data-v="big"] { background: #F0609E; color: #fff; }
+.board.is-bump { animation: bump .18s; }
+@keyframes bump { 30% { transform: translateX(-4px); } 70% { transform: translateX(4px); } }
+.gain { position: absolute; top: 10px; right: 18px; font: 700 26px var(--dots); color: #FFC629; opacity: 0; pointer-events: none; }
+.gain.is-on { animation: rise .7s ease-out; }
+@keyframes rise { 0% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-30px); } }
+</style>
+</head>
+<body data-game="2048">
+
+<main class="console console--narrow" style="max-width:600px">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Score</span><span class="read__value" id="score">0</span></div>
+    <div class="read "><span class="read__label">Best</span><span class="read__value" id="best">0</span></div>
+    <div class="read lcd__push"><span class="read__label">Biggest tile</span><span class="read__value" id="top">2</span></div>
+  </div>
+  <div class="screen">
+    <div class="board" id="board" role="img" aria-label="2048 board"></div>
+    <span class="gain" id="gain" aria-hidden="true"></span>
+    <div class="overlay" id="result">
+      <div class="overlay__in">
+        <h2 id="resultTitle">No moves left</h2>
+        <p id="resultText"></p>
+        <div class="btns">
+          <button class="btn" type="button" id="keepBtn" hidden>Keep going</button>
+          <button class="btn" type="button" id="againBtn">New game</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btns btns--row">
+    <button class="btn btn--primary" type="button" id="newBtn">New game</button>
+    <button class="btn" type="button" id="undoBtn">Undo move</button>
+  </div>
+  <div class="legend">
+    <span><kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> slide</span>
+    <span><kbd>U</kbd> undo</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Slide every tile on the board at once with the arrow keys, or swipe on a touch screen.</li>
+  <li>Two tiles with the same number merge into one worth both. Your score goes up by the new tile.</li>
+  <li>A new 2 or 4 appears after every move. Reach a 2048 tile to win, then keep going if you like.</li>
+  <li>No empty squares and no matching neighbours means the game is over. Undo takes back up to 20 moves.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
