@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Echo | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.echo { position: relative; width: min(100%, 60vh, 460px); aspect-ratio: 1; }
+.epad {
+  position: absolute; width: 38%; aspect-ratio: 1; border: 0; border-radius: 26%; cursor: pointer; touch-action: none;
+  transform: rotate(45deg); box-shadow: inset 0 -8px 0 rgba(0, 0, 0, .3); transition: filter .08s, transform .08s;
+  filter: brightness(.5) saturate(.8);
+}
+.epad span { display: block; transform: rotate(-45deg); font: 700 13px var(--display); color: rgba(0, 0, 0, .55); }
+.epad.is-lit, .echo[data-state="play"] .epad:active { filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 40px 6px var(--glow), inset 0 -3px 0 rgba(0, 0, 0, .25); }
+.epad.is-answer { filter: none; outline: 4px dashed #fff; outline-offset: 6px; }
+.echo[data-state="play"] .epad { filter: brightness(.82) saturate(.95); }
+.p-top { left: 31%; top: 4%; background: #5FD3B0; --glow: #5FD3B0; }
+.p-right { right: 4%; top: 31%; background: #FFC629; --glow: #FFC629; }
+.p-bottom { left: 31%; bottom: 4%; background: #F0554B; --glow: #F0554B; }
+.p-left { left: 4%; top: 31%; background: #4BA3F5; --glow: #4BA3F5; }
+.hub { position: absolute; left: 50%; top: 50%; width: 26%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: #1B212B; display: grid; place-items: center; text-align: center; box-shadow: inset 0 0 0 3px #2A313C; pointer-events: none; }
+.hub b { font: 700 clamp(26px, 5vh, 40px)/1 var(--dots); color: #fff; display: block; }
+.hub small { font-size: 12px; color: #B9C0CC; font-weight: 600; }
+.echo[data-state="play"] .hub { box-shadow: inset 0 0 0 3px var(--plastic); }
+</style>
+</head>
+<body data-game="echo">
+
+<main class="console console--narrow" style="max-width:600px">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Round</span><span class="read__value" id="round">0</span></div>
+    <div class="read lcd__push"><span class="read__label">Best</span><span class="read__value" id="best">0</span></div>
+  </div>
+  <div class="screen">
+    <div class="echo" data-state="idle">
+      <button class="epad p-top" type="button" aria-label="Top pad"><span>&uarr;</span></button>
+      <button class="epad p-right" type="button" aria-label="Right pad"><span>&rarr;</span></button>
+      <button class="epad p-bottom" type="button" aria-label="Bottom pad"><span>&darr;</span></button>
+      <button class="epad p-left" type="button" aria-label="Left pad"><span>&larr;</span></button>
+      <div class="hub" aria-live="polite"><div><b id="roundBig"></b><small id="status">Press start</small></div></div>
+    </div>
+    <div class="overlay" id="result">
+      <div class="overlay__in">
+        <h2>Missed one</h2>
+        <p id="resultText"></p>
+        <div class="btns"><button class="btn" type="button" id="againBtn">Play again</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="btns btns--row">
+    <button class="btn btn--primary" type="button" id="startBtn">Start</button>
+    <button class="btn" type="button" id="muteBtn" aria-pressed="false">Sound on</button>
+  </div>
+  <div class="legend"><span><kbd>&uarr;</kbd><kbd>&rarr;</kbd><kbd>&darr;</kbd><kbd>&larr;</kbd> press the matching pad</span></div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Press Start. The pads light up and play a note in a sequence.</li>
+  <li>When the centre says <b>Your turn</b>, repeat the sequence by pressing the pads in the same order.</li>
+  <li>Each round adds one more step and plays a little faster. One wrong pad ends the game.</li>
+  <li>Each pad has its own note, so you can play by ear as well as by sight.</li>
+</ul>
+<p>Arrow keys match the pads: <kbd>&uarr;</kbd> top, <kbd>&rarr;</kbd> right, <kbd>&darr;</kbd> bottom, <kbd>&larr;</kbd> left.</p>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
