@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sudoku | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.sgrid { display: grid; grid-template-columns: repeat(9, 1fr); width: min(100%, 62vh, 540px); aspect-ratio: 1; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 3px var(--ink); }
+.cell {
+  appearance: none; border: 0; padding: 0; min-width: 0; min-height: 0; background: #fff; color: #3B4CB8; cursor: pointer;
+  font: 600 clamp(18px, 4.4vh, 34px)/1 var(--display); box-shadow: inset -1px -1px 0 #CBD1DA; position: relative;
+}
+.cell.edge-r { box-shadow: inset -3px -1px 0 var(--ink); }
+.cell.edge-b { box-shadow: inset -1px -3px 0 var(--ink); }
+.cell.edge-r.edge-b { box-shadow: inset -3px -3px 0 var(--ink); }
+.cell.is-given { color: var(--ink); font-weight: 800; }
+.cell.is-peer { background: #F0EBFC; }
+.cell.is-same { background: #DCCEFA; }
+.cell.is-sel { background: var(--plastic); }
+.cell.is-bad { color: #D02F35; background-image: repeating-linear-gradient(135deg, transparent 0 5px, rgba(229, 72, 77, .14) 5px 7px); }
+.cell:focus-visible { outline-offset: -4px; }
+.notes { position: absolute; inset: 2px; display: grid; grid-template-columns: repeat(3, 1fr); }
+.notes i { font: 600 clamp(8px, 1.3vh, 12px)/1 var(--display); font-style: normal; color: #5C6472; display: grid; place-items: center; }
+.sgrid.is-solved .cell { animation: wave .5s ease-out both; }
+.sgrid.is-solved .cell:nth-child(9n+2) { animation-delay: .04s; } .sgrid.is-solved .cell:nth-child(9n+3) { animation-delay: .08s; }
+.sgrid.is-solved .cell:nth-child(9n+4) { animation-delay: .12s; } .sgrid.is-solved .cell:nth-child(9n+5) { animation-delay: .16s; }
+.sgrid.is-solved .cell:nth-child(9n+6) { animation-delay: .2s; } .sgrid.is-solved .cell:nth-child(9n+7) { animation-delay: .24s; }
+.sgrid.is-solved .cell:nth-child(9n+8) { animation-delay: .28s; } .sgrid.is-solved .cell:nth-child(9n) { animation-delay: .32s; }
+@keyframes wave { 50% { background: var(--plastic); } }
+.pad9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pad9 .btn { font-size: 24px; font-weight: 800; padding: 12px 0 10px; display: grid; justify-items: center; gap: 1px; }
+.pad9 .btn small { font: 600 11px var(--display); color: var(--ink-2); min-height: 13px; }
+.pad9.is-notes .btn { font-size: 17px; color: #3B4CB8; }
+.pad9 .btn.is-used { opacity: .35; }
+@media (max-width: 900px) {
+  .pad9 { grid-template-columns: repeat(9, 1fr); gap: 5px; }
+  .pad9 .btn { font-size: 20px; padding: 10px 0 8px; }
+}
+</style>
+</head>
+<body data-game="sudoku">
+
+<main class="console console--mid">
+  <div class="lcd">
+    <div class="read read--text"><span class="read__label">Level</span><span class="read__value" id="level">Easy</span></div>
+    <div class="read "><span class="read__label">Filled</span><span class="read__value" id="filled">0</span></div>
+    <div class="read lcd__push"><span class="read__label">Time</span><span class="read__value" id="time">0:00</span></div>
+  </div>
+  <div class="deck">
+    <div class="screen screen--board">
+      <div class="sgrid" id="grid" aria-label="Sudoku grid"></div>
+      <div class="overlay" id="result">
+        <div class="overlay__in">
+          <h2>Solved</h2>
+          <p id="resultText"></p>
+          <div class="btns"><button class="btn" type="button" id="againBtn">New puzzle</button></div>
+        </div>
+      </div>
+    </div>
+    <aside class="panel">
+      <div class="pad9" aria-label="Digits"></div>
+      <div class="btns btns--row">
+        <button class="btn" type="button" id="noteBtn" aria-pressed="false">Notes off</button>
+        <button class="btn" type="button" id="eraseBtn">Erase</button>
+      </div>
+      <div class="btns btns--row">
+        <button class="btn" type="button" id="undoBtn">Undo</button>
+        <button class="btn" type="button" id="hintBtn">Hint</button>
+      </div>
+      <div class="plate"><h2>New puzzle</h2>
+        <div class="btns btns--row">
+          <button class="btn" type="button" data-level="easy">Easy</button>
+          <button class="btn" type="button" data-level="medium">Medium</button>
+          <button class="btn" type="button" data-level="hard">Hard</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <div class="legend">
+    <span><kbd>1</kbd>–<kbd>9</kbd> place</span>
+    <span>Arrows move</span>
+    <span><kbd>N</kbd> notes</span>
+    <span><kbd>Backspace</kbd> erase</span>
+    <span><kbd>U</kbd> undo</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Fill the grid so every row, every column and every 3 &times; 3 box holds the digits 1 to 9 once each.</li>
+  <li>Select a square, then type or tap a digit. Bold digits are given and cannot change.</li>
+  <li>A digit that clashes with another in its row, column or box turns red.</li>
+  <li>Notes mode lets you pencil in candidates. Placing a digit clears that digit from the notes around it.</li>
+  <li>Every puzzle has exactly one solution. Your game is saved in this browser, so you can come back to it.</li>
+</ul>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
