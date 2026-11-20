@@ -432,7 +432,7 @@ class Chess {
     
     toggleAI() {
         this.aiEnabled = !this.aiEnabled;
-        alert(`AI ${this.aiEnabled ? 'enabled' : 'disabled'}`);
+        alert(this.aiEnabled ? 'The computer now plays Black.' : 'Computer opponent off. Two players.');
     }
 }
 
