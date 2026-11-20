@@ -282,7 +282,8 @@ class Chess {
         const piece = this.board[fromRow][fromCol];
         const target = this.board[toRow][toCol];
         
-        if (!piece || piece.color !== this.currentPlayer) return false;
+        // whose turn it is is checked by the caller; this also has to answer for the side not moving
+        if (!piece) return false;
         if (target && target.color === piece.color) return false;
         
         return true;
