@@ -1,108 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Neon Racer</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(180deg, #001122, #000000);
-            color: #00ff00;
-            overflow: hidden;
-            height: 100vh;
-        }
-        
-        .game-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        
-        canvas {
-            border: 3px solid #ff00ff;
-            border-radius: 15px;
-            box-shadow: 0 0 40px #ff00ff;
-            background: #000;
-        }
-        
-        .hud {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #00ffff;
-            box-shadow: 0 0 20px #00ffff;
-        }
-        
-        .speed {
-            font-size: 32px;
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff;
-            margin-bottom: 10px;
-        }
-        
-        .distance {
-            font-size: 18px;
-            color: #00ffff;
-        }
-        
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ffff00;
-            font-size: 14px;
-            color: #ffff00;
-        }
-        
-        .game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            border: 3px solid #ff0040;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            color: #ff0040;
-            display: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Racer | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
 </head>
-<body>
-    <div class="game-container">
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
-        
-        <div class="hud">
-            <div class="speed">SPEED: <span id="speed">0</span> KM/H</div>
-            <div class="distance">Distance: <span id="distance">0</span>m</div>
-            <div style="color: #00ff00; margin-top: 10px;">Score: <span id="score">0</span></div>
-        </div>
-        
-        <div class="controls">
-            <div><strong>CONTROLS:</strong></div>
-            <div>A/D - Steer Left/Right</div>
-            <div>W/S - Accelerate/Brake</div>
-            <div>SPACE - Nitro Boost</div>
-            <div>R - Restart</div>
-        </div>
-        
-        <div class="game-over" id="gameOver">
-            <h2>RACE OVER!</h2>
-            <p>Final Distance: <span id="finalDistance">0</span>m</p>
-            <p>Top Speed: <span id="topSpeed">0</span> km/h</p>
-            <button onclick="game.restart()" style="margin-top: 20px; padding: 15px 30px; background: #ff00ff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">RACE AGAIN</button>
-        </div>
+<body data-game="racer" data-pad="wasd space:Nitro r:Restart">
+
+<main class="console console--mid">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Speed, km/h</span><span class="read__value" id="speed">0</span></div>
+    <div class="read "><span class="read__label">Distance, m</span><span class="read__value" id="distance">0</span></div>
+    <div class="read lcd__push"><span class="read__label">Score</span><span class="read__value" id="score">0</span></div>
+  </div>
+  <div class="screen">
+    <canvas id="gameCanvas" width="800" height="600" aria-label="Race track"></canvas>
+    <div class="overlay" id="gameOver">
+      <div class="overlay__in">
+        <h2>Race over</h2>
+        <p>Distance <span id="finalDistance">0</span> m &nbsp; Top speed <span id="topSpeed">0</span> km/h</p>
+        <div class="btns"><button class="btn" type="button" onclick="game.restart()">Race again</button></div>
+      </div>
     </div>
-    
-    <script src="racing.js"></script>
+  </div>
+  <div class="legend">
+    <span><kbd>A</kbd><kbd>D</kbd> steer</span>
+    <span><kbd>W</kbd> accelerate</span>
+    <span><kbd>S</kbd> brake</span>
+    <span><kbd>Space</kbd> nitro</span>
+    <span><kbd>R</kbd> restart</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Stay on the road and dodge the traffic. One crash ends the race.</li>
+  <li>The faster and further you go, the higher your score.</li>
+  <li>Nitro gives a short burst of speed.</li>
+</ul>
+<p><kbd>A</kbd><kbd>D</kbd> steer &nbsp; <kbd>W</kbd> accelerate &nbsp; <kbd>S</kbd> brake &nbsp; <kbd>Space</kbd> nitro &nbsp; <kbd>R</kbd> restart</p>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="racing.js"></script>
 </body>
 </html>
