@@ -176,8 +176,8 @@ class WarCommander {
         
         const turnIndicator = document.getElementById('turnIndicator');
         turnIndicator.innerHTML = this.currentPlayer === 1 ? 
-            '<span class="player1">Player 1\'s Turn</span>' : 
-            '<span class="player2">Player 2\'s Turn</span>';
+            '<span class="player1">Blue</span>' : 
+            '<span class="player2">Red</span>';
     }
     
     draw() {
