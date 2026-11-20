@@ -1,185 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Neon Tetris</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Courier New', monospace;
-            background: #000;
-            color: #00ff00;
-            overflow: hidden;
-            height: 100vh;
-        }
-        
-        .game-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: radial-gradient(circle, #001122, #000000);
-        }
-        
-        .game-board {
-            display: flex;
-            gap: 30px;
-            align-items: flex-start;
-        }
-        
-        .left-panel, .right-panel {
-            width: 200px;
-            background: rgba(0, 255, 0, 0.1);
-            border: 2px solid #00ff00;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 20px #00ff00;
-        }
-        
-        .game-area {
-            position: relative;
-        }
-        
-        canvas {
-            border: 3px solid #00ff00;
-            border-radius: 10px;
-            box-shadow: 0 0 30px #00ff00, inset 0 0 30px rgba(0, 255, 0, 0.1);
-            background: #000011;
-        }
-        
-        .score-section {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .score-value {
-            font-size: 24px;
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
-        }
-        
-        .level-value {
-            font-size: 18px;
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff;
-        }
-        
-        .next-piece {
-            border: 1px solid #00ff00;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px 0;
-            background: rgba(0, 0, 0, 0.5);
-        }
-        
-        .controls {
-            font-size: 12px;
-            line-height: 1.6;
-        }
-        
-        .key {
-            color: #ffff00;
-            font-weight: bold;
-        }
-        
-        .game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #ff0000;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            color: #ff0000;
-            font-size: 24px;
-            display: none;
-            box-shadow: 0 0 30px #ff0000;
-        }
-        
-        .restart-btn {
-            background: linear-gradient(45deg, #ff0000, #ff4444);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-        }
-        
-        .restart-btn:hover {
-            background: linear-gradient(45deg, #ff4444, #ff6666);
-        }
-        
-        @keyframes neonPulse {
-            0%, 100% { box-shadow: 0 0 20px #00ff00; }
-            50% { box-shadow: 0 0 40px #00ff00, 0 0 60px #00ff00; }
-        }
-        
-        .neon-pulse {
-            animation: neonPulse 2s ease-in-out infinite;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Tetris | Legendary Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/arcade.css">
+<style>
+.deck { grid-template-columns: minmax(0, 1fr) 200px; }
+.next { background: var(--screen); border-radius: 10px; display: grid; place-items: center; padding: 10px; }
+@media (max-width: 900px) { .deck { grid-template-columns: minmax(0, 1fr) 132px; } .only-wide { display: none; } }
+</style>
 </head>
-<body>
-    <div class="game-container">
-        <div class="game-board">
-            <div class="left-panel">
-                <div class="score-section">
-                    <h3>SCORE</h3>
-                    <div class="score-value" id="score">0</div>
-                </div>
-                
-                <div class="score-section">
-                    <h3>LEVEL</h3>
-                    <div class="level-value" id="level">1</div>
-                </div>
-                
-                <div class="score-section">
-                    <h3>LINES</h3>
-                    <div class="score-value" id="lines">0</div>
-                </div>
-                
-                <div class="next-piece">
-                    <h4>NEXT</h4>
-                    <canvas id="nextCanvas" width="80" height="80"></canvas>
-                </div>
-            </div>
-            
-            <div class="game-area">
-                <canvas id="gameCanvas" width="300" height="600"></canvas>
-                <div class="game-over" id="gameOver">
-                    <div>GAME OVER</div>
-                    <div style="font-size: 16px; margin: 10px 0;">Final Score: <span id="finalScore">0</span></div>
-                    <button class="restart-btn" onclick="game.restart()">RESTART</button>
-                </div>
-            </div>
-            
-            <div class="right-panel">
-                <div class="controls">
-                    <h3>CONTROLS</h3>
-                    <p><span class="key">←→</span> Move</p>
-                    <p><span class="key">↓</span> Soft Drop</p>
-                    <p><span class="key">↑</span> Rotate</p>
-                    <p><span class="key">SPACE</span> Hard Drop</p>
-                    <p><span class="key">P</span> Pause</p>
-                    <p><span class="key">R</span> Restart</p>
-                </div>
-                
-                <div style="margin-top: 30px;">
-                    <h4>SCORING</h4>
-                    <p>Single: 100</p>
-                    <p>Double: 300</p>
-                    <p>Triple: 500</p>
-                    <p>Tetris: 800</p>
-                </div>
-            </div>
+<body data-game="tetris" data-pad="arrows repeat space:Drop p:Pause">
+
+<main class="console console--narrow">
+  <div class="lcd">
+    <div class="read "><span class="read__label">Score</span><span class="read__value" id="score">0</span></div>
+    <div class="read "><span class="read__label">Level</span><span class="read__value" id="level">1</span></div>
+    <div class="read "><span class="read__label">Lines</span><span class="read__value" id="lines">0</span></div>
+  </div>
+  <div class="deck">
+    <div class="screen">
+      <canvas id="gameCanvas" width="300" height="600" aria-label="Tetris well"></canvas>
+      <div class="overlay" id="gameOver">
+        <div class="overlay__in">
+          <h2>Game over</h2>
+          <p>Final score <span id="finalScore">0</span></p>
+          <div class="btns"><button class="btn" type="button" onclick="game.restart()">Play again</button></div>
         </div>
+      </div>
     </div>
-    
-    <script src="tetris.js"></script>
+    <aside class="panel">
+      <div class="plate"><h2>Next piece</h2><div class="next"><canvas id="nextCanvas" width="80" height="80"></canvas></div></div>
+      <div class="plate only-wide"><h2>Points per clear</h2>
+        <div class="row"><span>1 line</span><b>100</b></div>
+        <div class="row"><span>2 lines</span><b>300</b></div>
+        <div class="row"><span>3 lines</span><b>500</b></div>
+        <div class="row"><span>4 lines</span><b>800</b></div>
+      </div>
+    </aside>
+  </div>
+  <div class="legend">
+    <span><kbd>&larr;</kbd><kbd>&rarr;</kbd> move</span>
+    <span><kbd>&uarr;</kbd> rotate</span>
+    <span><kbd>&darr;</kbd> soft drop</span>
+    <span><kbd>Space</kbd> hard drop</span>
+    <span><kbd>P</kbd> pause</span>
+    <span><kbd>R</kbd> restart</span>
+  </div>
+</main>
+
+<template id="howto">
+<ul>
+  <li>Move and rotate the falling piece so rows fill completely. Full rows clear.</li>
+  <li>Clearing several rows at once scores more: 100, 300, 500, then 800 for four.</li>
+  <li>The game speeds up as your level rises, and ends when the stack reaches the top.</li>
+</ul>
+<p><kbd>&larr;</kbd><kbd>&rarr;</kbd> move &nbsp; <kbd>&uarr;</kbd> rotate &nbsp; <kbd>&darr;</kbd> soft drop &nbsp; <kbd>Space</kbd> hard drop &nbsp; <kbd>P</kbd> pause &nbsp; <kbd>R</kbd> restart</p>
+</template>
+
+<script src="../assets/games.js"></script>
+<script src="../assets/arcade.js"></script>
+<script src="tetris.js"></script>
 </body>
 </html>
