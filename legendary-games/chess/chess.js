@@ -336,7 +336,12 @@ class Chess {
         }
         
         if (allMoves.length > 0) {
-            const randomMove = allMoves[Math.floor(Math.random() * allMoves.length)];
+            // take the most valuable piece on offer; otherwise play a random move
+            const value = { pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, king: 100 };
+            const gain = m => { const t = this.board[m.to[0]][m.to[1]]; return t ? value[t.type] : 0; };
+            const best = Math.max(...allMoves.map(gain));
+            const pool = best > 0 ? allMoves.filter(m => gain(m) === best) : allMoves;
+            const randomMove = pool[Math.floor(Math.random() * pool.length)];
             this.makeMove(randomMove.from[0], randomMove.from[1], randomMove.to[0], randomMove.to[1]);
             this.switchPlayer();
         }
